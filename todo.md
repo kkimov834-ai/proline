@@ -172,3 +172,12 @@
 - [x] Logout-dan sonra session, board, audit, export, notification və comments query cache-lərini reset et.
 - [x] Logout düzəlişindən sonra TypeScript, Vitest və production build-i yenidən yoxla.
 - [x] Yeni logout bugfix checkpoint-ini yayımla.
+
+## Email, mobil və bildiriş yenilənməsi
+
+- [x] Login email-lərini dispatcher, production, polishing, paint, warehouse @proline olaraq dəyiş və 010203 şifrəsini qoru.
+- [x] Mobil cihazlarda noutbukdakı bütün funksiyaların (filter, comments, settings, export) tam responsiv işləməsini təmin et.
+- [x] Daxil olmuş mobil istifadəçilər üçün web/push bağlı olsa belə tətbiqdaxili bildiriş polling və alert axınını yoxla.
+- [x] Mobil (375px) və tablet (768px) görünüşlərini bütün funksiyalar üzrə vizual audit et.
+- [x] TypeScript, Vitest, production build və canlı checkpoint-i tamamla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
