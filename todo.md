@@ -158,3 +158,17 @@
 - [x] Aktiv tema rənglərini board, header, modal və Settings panelinə tətbiq et.
 - [x] 375px, 768px və 1280px responsive görünüşü, TypeScript, Vitest və production build-i yoxla.
 - [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Dərhal çıxış bug-u
+
+- [x] Logout düyməsinə basdıqda server sessiyasını dərhal ləğv et.
+- [x] Logout zamanı React/query state-lərini təmizlə və login səhifəsini dərhal göstər.
+- [x] Logout axınının reload-suz işlədiyini test et və auth logout testini genişləndir.
+- [x] TypeScript, Vitest, production build və canlı checkpoint-i tamamla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Logout cache reset audit
+
+- [x] Logout-dan sonra session, board, audit, export, notification və comments query cache-lərini reset et.
+- [x] Logout düzəlişindən sonra TypeScript, Vitest və production build-i yenidən yoxla.
+- [x] Yeni logout bugfix checkpoint-ini yayımla.
