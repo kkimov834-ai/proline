@@ -29,3 +29,9 @@
 - [x] Server heartbeat və shared presence siyahısı ilə onlayn/offline statuslarını düzəlt.
 - [x] İki ayrı cihaz, reload və logout axınlarını test et.
 - [x] Bug fix-dən sonra yeni checkpoint yaradıb publish olunmuş linki təqdim et.
+
+## Session query error fix
+
+- [x] Login olmadan qorunan board query-sinin heç vaxt işləməməsini təmin et.
+- [x] Gözlənilən "PROLINE session tələb olunur" halını console API xətası kimi loglama.
+- [x] Bugfix üçün TypeScript, test, preview və yeni checkpoint yoxlamalarını tamamla.

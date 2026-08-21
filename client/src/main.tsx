@@ -10,6 +10,8 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
+const isExpectedUnauthenticatedError = (error: unknown) => error instanceof TRPCClientError && error.message === "PROLINE session tələb olunur";
+
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
@@ -24,6 +26,7 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
+    if (isExpectedUnauthenticatedError(error)) return;
     redirectToLoginIfUnauthorized(error);
     console.error("[API Query Error]", error);
   }
@@ -32,6 +35,7 @@ queryClient.getQueryCache().subscribe(event => {
 queryClient.getMutationCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.mutation.state.error;
+    if (isExpectedUnauthenticatedError(error)) return;
     redirectToLoginIfUnauthorized(error);
     console.error("[API Mutation Error]", error);
   }
