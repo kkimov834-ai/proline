@@ -181,3 +181,11 @@
 - [x] Mobil (375px) və tablet (768px) görünüşlərini bütün funksiyalar üzrə vizual audit et.
 - [x] TypeScript, Vitest, production build və canlı checkpoint-i tamamla.
 - [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Login mutation xətası
+
+- [x] Client və server login email xəritəsini və 010203 kodunu eyni mənbə ilə doğrula.
+- [x] Email boşluqlarını, böyük-kiçik hərf fərqini və kod input formatını normalizasiya et.
+- [x] Beş rol üzrə login mutation və sessiya bərpasını test et.
+- [x] TypeScript, Vitest, production build və canlı checkpoint-i tamamla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
