@@ -19,3 +19,9 @@ button { cursor: pointer; }
 ::-webkit-scrollbar-thumb:hover { background: #D78A4A; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 @layer base { * { @apply border-border outline-ring/50; } }
+
+.proline-theme-accent { color: var(--proline-accent, #D78A4A) !important; }
+.proline-theme-border { border-color: color-mix(in srgb, var(--proline-accent, #D78A4A) 45%, transparent) !important; }
+.proline-theme-surface { background: var(--proline-surface, #0D1C29) !important; }
+.proline-theme-button { background-color: var(--proline-accent, #D78A4A) !important; }
+.proline-theme-button:hover { background-color: var(--proline-accent-hover, #E49A5A) !important; }

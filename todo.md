@@ -148,3 +148,13 @@
 - [x] Export cədvəlində Azərbaycan dilində başlıqları və ətraflı məlumatı vizual yoxla.
 - [x] Testləri və canlı checkpoint-i tamamla.
 
+
+## Status, ikon header və rəngli temalar
+
+- [x] Təsdiq tələb olunmayan sifarişlər üçün export statusunu “YOXDUR” kimi göstər.
+- [x] Header-də Settings, bildiriş səsi və export yazılarını yalnız ikon düymələrinə çevir.
+- [x] CSV/XLS export düymələrini header-dən silib yalnız Settings panelində saxla.
+- [x] Settings-ə müxtəlif rəng palitralı tema seçimləri əlavə et və seçimi yadda saxla.
+- [x] Aktiv tema rənglərini board, header, modal və Settings panelinə tətbiq et.
+- [x] 375px, 768px və 1280px responsive görünüşü, TypeScript, Vitest və production build-i yoxla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
