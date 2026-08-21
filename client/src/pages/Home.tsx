@@ -1,5 +1,6 @@
 /* Industrial Command design: dark ink surfaces, Forge Copper #D78A4A, Space Grotesk + DM Sans, tray-like workflow columns. */
 import { useEffect, useMemo, useState } from "react";
+import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import {
   Archive,
@@ -63,30 +64,35 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [orders, setOrders] = useState<Order[]>(() => { try { return JSON.parse(localStorage.getItem(STORAGE) || "null") || seedOrders; } catch { return seedOrders; } });
+  const [orders, setOrders] = useState<Order[]>([]);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Order | null>(null);
   const [creating, setCreating] = useState(false);
   const [dragged, setDragged] = useState<Order | null>(null);
   const [dropTarget, setDropTarget] = useState<ColumnId | null>(null);
-  const [notices, setNotices] = useState<Notice[]>(() => { try { return JSON.parse(localStorage.getItem(NOTICE_STORAGE) || "[]"); } catch { return []; } });
+  const [notices, setNotices] = useState<Notice[]>([]);
   const [rejecting, setRejecting] = useState<Notice | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [form, setForm] = useState({ title: "", description: "", priority: "normal" as Priority, image: "" });
+  const loginMutation = trpc.board.login.useMutation();
+  const createMutation = trpc.board.create.useMutation();
+  const updateMutation = trpc.board.update.useMutation();
+  const requestMoveMutation = trpc.board.requestMove.useMutation();
+  const respondMutation = trpc.board.respond.useMutation();
+  const boardQuery = trpc.board.list.useQuery(undefined, { enabled: !!user, refetchInterval: 3000 });
 
-  useEffect(() => { localStorage.setItem(STORAGE, JSON.stringify(orders)); }, [orders]);
-  useEffect(() => { localStorage.setItem(NOTICE_STORAGE, JSON.stringify(notices)); }, [notices]);
+  useEffect(() => { if (!boardQuery.data) return; const mappedOrders: Order[] = boardQuery.data.orders.map((item) => ({ id: String(item.id), title: item.title, description: item.description || "", image: item.imageUrl || undefined, priority: item.priority, createdAt: item.createdAt.toISOString(), column: item.columnId, stageEnteredAt: item.stageEnteredAt.toISOString(), pendingTo: item.pendingTo || undefined, rejectedReason: item.rejectedReason || undefined })); setOrders(mappedOrders); const mappedNotices: Notice[] = boardQuery.data.notifications.map((item) => ({ id: String(item.id), orderId: String(item.orderId), from: item.fromColumn, to: item.toColumn, requester: String(item.requesterUserId), createdAt: item.createdAt.toISOString(), status: item.status, reason: item.reason || undefined })); setNotices(mappedNotices); }, [boardQuery.data]);
   const visibleOrders = useMemo(() => orders.filter((o) => `${o.title} ${o.id} ${o.description}`.toLowerCase().includes(query.toLowerCase())), [orders, query]);
   const total = orders.length;
   const completed = orders.filter((o) => o.column === "warehouse").length;
   const pendingForUser = notices.filter((n) => n.status === "pending" && (user?.role === "admin" || roleColumn[user?.role || "admin"] === n.to));
 
-  function login(e: React.FormEvent) { e.preventDefault(); const found = users[email.trim().toLowerCase()]; if (!found || code !== "010203") { setLoginError("Email və ya giriş kodu yanlışdır."); return; } setUser(found); setLoginError(""); toast.success(`${found.label} kimi daxil oldunuz`); }
+  async function login(e: React.FormEvent) { e.preventDefault(); try { const result = await loginMutation.mutateAsync({ email, code }); setUser({ email: result.email, role: result.role as Role, label: result.label, column: result.column as ColumnId | undefined }); setLoginError(""); toast.success(`${result.label} kimi daxil oldunuz`); } catch { setLoginError("Email və ya giriş kodu yanlışdır."); } }
   function openCreate() { if (!canEdit(user)) return toast.error("Yalnız Dispatcher sifariş yarada bilər."); setForm({ title: "", description: "", priority: "normal", image: "" }); setSelected(null); setCreating(true); }
   function openEdit(order: Order) { if (!canEdit(user)) return toast.error("Bu əməliyyat üçün Dispatcher rolu tələb olunur."); setForm({ title: order.title, description: order.description, priority: order.priority, image: order.image || "" }); setSelected(order); setCreating(true); }
-  function saveOrder(e: React.FormEvent) { e.preventDefault(); if (!form.title.trim()) return toast.error("Sifariş adı daxil edin."); if (selected) { setOrders((list) => list.map((o) => o.id === selected.id ? { ...o, title: form.title.trim(), description: form.description.trim(), priority: form.priority, image: form.image } : o)); toast.success("Sifariş yeniləndi"); } else { const next: Order = { id: `PL-${2409 + orders.length}`, title: form.title.trim(), description: form.description.trim(), priority: form.priority, image: form.image, createdAt: new Date().toISOString(), column: "orders", stageEnteredAt: new Date().toISOString() }; setOrders((list) => [next, ...list]); toast.success("Sifariş Sifarişlər sütununa əlavə edildi"); } setCreating(false); }
-  function moveOrder(order: Order, to: ColumnId) { if (to === order.column) return; if (!canMove(user, order.column, to)) { toast.error("Bu mərhələyə keçid üçün icazəniz yoxdur."); return; } const notice: Notice = { id: crypto.randomUUID(), orderId: order.id, from: order.column, to, requester: user?.label || "Dispatcher", createdAt: new Date().toISOString(), status: "pending" }; setOrders((list) => list.map((o) => o.id === order.id ? { ...o, pendingTo: to, rejectedReason: undefined } : o)); setNotices((list) => [notice, ...list]); toast.success(`${columns.find((c) => c.id === to)?.label} rəhbərinə təsdiq göndərildi`); }
-  function respondNotice(notice: Notice, accepted: boolean, reason = "") { if (accepted) { setOrders((list) => list.map((o) => o.id === notice.orderId ? { ...o, column: notice.to, stageEnteredAt: new Date().toISOString(), pendingTo: undefined, rejectedReason: undefined } : o)); setNotices((list) => list.map((n) => n.id === notice.id ? { ...n, status: "accepted" } : n)); toast.success(`${notice.orderId} qəbul olundu və ${columns.find((c) => c.id === notice.to)?.label} sütununa keçdi`); } else { setOrders((list) => list.map((o) => o.id === notice.orderId ? { ...o, pendingTo: undefined, rejectedReason: reason || "Səbəb qeyd edilməyib." } : o)); setNotices((list) => list.map((n) => n.id === notice.id ? { ...n, status: "rejected", reason: reason || "Səbəb qeyd edilməyib." } : n)); toast.error(`${notice.orderId} imtina edildi`); } setRejecting(null); setRejectReason(""); }
+  async function saveOrder(e: React.FormEvent) { e.preventDefault(); if (!form.title.trim()) return toast.error("Sifariş adı daxil edin."); if (selected) { await updateMutation.mutateAsync({ orderId: Number(selected.id), title: form.title.trim(), description: form.description.trim(), imageUrl: form.image, priority: form.priority }); await boardQuery.refetch(); toast.success("Sifariş yeniləndi"); } else { await createMutation.mutateAsync({ title: form.title.trim(), description: form.description.trim(), imageUrl: form.image, priority: form.priority }); await boardQuery.refetch(); toast.success("Sifariş Sifarişlər sütununa əlavə edildi"); } setCreating(false); }
+  async function moveOrder(order: Order, to: ColumnId) { if (to === order.column) return; if (!canMove(user, order.column, to)) { toast.error("Bu mərhələyə keçid üçün icazəniz yoxdur."); return; } try { await requestMoveMutation.mutateAsync({ orderId: Number(order.id), toColumn: to }); await boardQuery.refetch(); toast.success(`${columns.find((c) => c.id === to)?.label} rəhbərinə təsdiq göndərildi`); } catch { toast.error("Sifariş keçidi serverdə yadda saxlanmadı."); } }
+  async function respondNotice(notice: Notice, accepted: boolean, reason = "") { try { await respondMutation.mutateAsync({ notificationId: Number(notice.id), accepted, reason }); await boardQuery.refetch(); if (accepted) toast.success(`${notice.orderId} qəbul olundu və ${columns.find((c) => c.id === notice.to)?.label} sütununa keçdi`); else toast.error(`${notice.orderId} imtina edildi`); } catch { toast.error("Bildiriş cavabı serverdə yadda saxlanmadı."); } setRejecting(null); setRejectReason(""); }
 
 
   if (!user) return <LoginScreen email={email} code={code} setEmail={setEmail} setCode={setCode} error={loginError} onSubmit={login} />;

@@ -11,3 +11,12 @@
 - [x] Sifariş yaratma formasında şəkil sahəsini cihaz qalereyasını açan file input ilə əvəz et.
 - [x] Responsive görünüşü, TypeScript yoxlamasını və əsas workflow axınlarını test et.
 - [ ] Yeni checkpoint yaradıb yenilənmiş versiyanı təqdim et.
+
+## Cross-device sinxronizasiya
+
+- [x] Frontend-only localStorage modelini ortaq backend/database modelinə keçirmək.
+- [x] User/session məlumatlarını server tərəfdə qorunan şəkildə saxlamaq və login rolunu serverdə təsdiqləmək.
+- [x] Sifarişlər və approval notification-ları bütün cihazlar üçün ortaq API ilə sinxronlaşdırmaq.
+- [x] Real-time və ya qısa interval polling ilə yeni sifariş/bildiriş yenilənməsini əlavə etmək.
+- [ ] Dispatcher → Production ssenarisini iki ayrı browser/device ilə yoxlamaq.
+- [ ] Cross-device düzəlişdən sonra yeni checkpoint yaratmaq.
