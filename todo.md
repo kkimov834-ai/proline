@@ -196,3 +196,10 @@
 - [x] Bütün loginlər üçün 010203 kodunu qoruyub səhv input normalizasiyasını yoxla.
 - [x] Mobil cihazda noutbuk funksiyalarının və web icazəsindən asılı olmayan in-app notification axınının mövcud olduğunu doğrula.
 - [x] Beş rol, mobil görünüş, testlər və yeni canlı checkpoint-i tamamla.
+
+## Dəqiq rol adları
+
+- [x] dispatcher@proline üçün görünən adı “Sifariş” et.
+- [x] production@proline üçün “İstehsalat”, polishing@proline üçün “Cilalama”, paint@proline üçün “Boyalama”, warehouse@proline üçün “Anbar” adlarını doğrula.
+- [x] Bütün hesablar üçün 010203 kodunu saxla və login testlərini yenilə.
+- [x] TypeScript, Vitest, production build və yeni canlı checkpoint-i tamamla.
