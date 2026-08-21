@@ -20,3 +20,12 @@
 - [x] Real-time və ya qısa interval polling ilə yeni sifariş/bildiriş yenilənməsini əlavə etmək.
 - [x] Dispatcher → Production ssenarisini iki ayrı browser/device ilə yoxlamaq.
 - [x] Cross-device düzəlişdən sonra yeni checkpoint yaratmaq.
+
+## Approval, session və presence bug fix
+
+- [x] Göndərən istifadəçiyə yalnız "Cavab gözlənilir" statusu göstər; qəbul/imtina düymələrini yalnız hədəf rolun istifadəçisinə göstər.
+- [x] Approval cavabını serverdə yalnız hədəf rolun sessiyasına icazəli et.
+- [x] Reload zamanı signed PROLINE session cookie-dən istifadəçini bərpa et; yalnız Çıxış düyməsi login ekranına qaytarsın.
+- [x] Server heartbeat və shared presence siyahısı ilə onlayn/offline statuslarını düzəlt.
+- [x] İki ayrı cihaz, reload və logout axınlarını test et.
+- [x] Bug fix-dən sonra yeni checkpoint yaradıb publish olunmuş linki təqdim et.
