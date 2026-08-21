@@ -35,3 +35,14 @@
 - [x] Login olmadan qorunan board query-sinin heç vaxt işləməməsini təmin et.
 - [x] Gözlənilən "PROLINE session tələb olunur" halını console API xətası kimi loglama.
 - [x] Bugfix üçün TypeScript, test, preview və yeni checkpoint yoxlamalarını tamamla.
+
+## Yeni bildiriş və board təmizliyi
+
+- [x] Yeni sifariş və approval gələndə istifadəçi qarşılıqlı əlaqəsindən sonra səsli xəbərdarlıq səsləndir.
+- [x] Sifariş yaratma zamanı yaranan 500 server xətasının səbəbini tapıb düzəlt.
+- [x] Hər rol üçün icazəsiz düymə və əməliyyatları UI-dan gizlət.
+- [x] Sifariş kartında əlavə edilmiş şəkli preview kimi göstər.
+- [x] Mövcud database sifarişlərini təhlükəsiz şəkildə təmizlə və board-u boş başlat.
+- [x] Komanda/onlayn işçi status panelini header-dən sil.
+- [x] Permission, create, image preview, sound və empty board testlərini apar.
+- [ ] Yeni checkpoint yaradıb canlı linki təqdim et.
