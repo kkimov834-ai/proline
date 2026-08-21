@@ -129,3 +129,22 @@
 - [x] Sifariş modalında işçi şərhləri timeline-ı və yeni şərh formunu əlavə et.
 - [x] 375px, 768px və 1280px viewport-larda responsive, filter və comments workflow-larını yoxla.
 - [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Azərbaycan dilli Excel şablonları
+
+- [x] Excel export məlumatlarını Azərbaycan dilində ətraflı cədvəl sütunlarına çevir.
+- [x] Excel çıxışında seçilən şablona uyğun başlıq, sütunlar, status və formatlama tətbiq et.
+- [x] Settings bölməsinə müxtəlif Excel şablonlarının seçimini əlavə et və seçimi yadda saxla.
+- [x] Seçilmiş Excel şablonunu export proseduruna bağla və mövcud CSV/XLS axınını qoruyaraq test et.
+- [x] Desktop, tablet və mobil Settings/export görünüşünü yoxla.
+- [x] TypeScript, Vitest, production build və yeni checkpoint yoxlamalarını tamamla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Azərbaycan dilli Excel şablonları — icra qeydləri
+
+- [x] Mövcud export prosedurunun və Settings ekranının texniki auditini tamamla.
+- [x] Excel məlumat strukturunu və şablon modellərini yekunlaşdır.
+- [x] Settings şablon seçimini və export tətbiqini implementasiya et.
+- [x] Export cədvəlində Azərbaycan dilində başlıqları və ətraflı məlumatı vizual yoxla.
+- [x] Testləri və canlı checkpoint-i tamamla.
+
