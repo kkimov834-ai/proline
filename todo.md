@@ -61,4 +61,11 @@
 - [x] `soundEnabled` state-ni notification/order audio trigger-lərinə bağla və söndürüləndə səsin dayanmasını təsdiqlə.
 - [x] Board üzərində sifariş modalından kənar ayrıca audit timeline paneli göstər.
 - [x] CSV/XLS export, audit paneli və sound toggle üçün konkret smoke/manual yoxlama apar.
-- [x] Son düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.
+- [ ] Son düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.
+
+## Create 500 və sound UI bugfix
+
+- [x] Browser-da təsdiqlənən `board.create` 500 xətasının server səbəbini tapıb düzəlt.
+- [x] Bildiriş səsi kontrolunu yalnız ikon deyil, aydın mətnli aktiv/deaktiv düymə kimi göstər.
+- [x] Create + şəkil, sound toggle, export və approval axınlarını yenidən yoxla.
+- [ ] Yeni bugfix checkpoint-i yaradıb canlı linki təqdim et.
