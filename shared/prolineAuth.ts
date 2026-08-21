@@ -1,7 +1,7 @@
 export const PROLINE_ACCESS_CODE = "010203" as const;
 
 export const PROLINE_ROLE_MAP = {
-  "dispatcher@proline": { role: "admin", label: "Dispatcher / Admin" },
+  "dispatcher@proline": { role: "admin", label: "Sifarişlər / Admin" },
   "production@proline": { role: "production", label: "İstehsalat", column: "production" },
   "polishing@proline": { role: "polishing", label: "Cilalama", column: "polishing" },
   "paint@proline": { role: "paint", label: "Boyalama", column: "paint" },

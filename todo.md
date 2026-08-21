@@ -189,3 +189,10 @@
 - [x] Beş rol üzrə login mutation və sessiya bərpasını test et.
 - [x] TypeScript, Vitest, production build və canlı checkpoint-i tamamla.
 - [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Login və mobil notification dəqiqləşdirməsi
+
+- [x] Shared login xəritəsində dispatcher-i Sifarişlər/Admin, digər email-ləri uyğun Azərbaycan sütun rolları kimi doğrula.
+- [x] Bütün loginlər üçün 010203 kodunu qoruyub səhv input normalizasiyasını yoxla.
+- [x] Mobil cihazda noutbuk funksiyalarının və web icazəsindən asılı olmayan in-app notification axınının mövcud olduğunu doğrula.
+- [x] Beş rol, mobil görünüş, testlər və yeni canlı checkpoint-i tamamla.
