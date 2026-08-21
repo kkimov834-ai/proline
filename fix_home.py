@@ -1,0 +1,17 @@
+from pathlib import Path
+p = Path('/home/ubuntu/proline/client/src/pages/Home.tsx')
+s = p.read_text()
+start = s.index('function NoticeTray')
+end = s.index('function Metric', start)
+replacement = '''function NoticeTray({ notices, orders, onAccept, onReject }: { notices: Notice[]; orders: Order[]; onAccept: (notice: Notice) => void; onReject: (notice: Notice) => void }) {
+  if (!notices.length) return null;
+  return <section className="mb-6 rounded-xl border border-[#D78A4A]/30 bg-[#D78A4A]/[.07] p-4">
+    <div className="flex items-center justify-between mb-3"><div className="flex items-center gap-2"><span className="h-8 w-8 rounded-lg bg-[#D78A4A]/15 flex items-center justify-center text-[#D78A4A]"><PackageCheck size={16} /></span><div><div className="font-display font-bold text-sm">Yeni mərhələ sorğusu</div><div className="text-[10px] uppercase tracking-[.12em] text-[#9B8B7D]">Təsdiq gözləyən sifarişlər</div></div></div><span className="text-xs font-bold text-[#D78A4A]">{notices.length} sorğu</span></div>
+    <div className="space-y-2">{notices.map((notice) => { const order = orders.find((o) => o.id === notice.orderId); const target = columns.find((c) => c.id === notice.to); return <div key={notice.id} className="flex flex-col md:flex-row md:items-center justify-between gap-3 rounded-lg bg-[#0B1823]/80 border border-white/[.08] px-3.5 py-3"><div><div className="text-xs font-semibold text-[#E2E9ED]">{notice.orderId} · {order?.title || "Sifariş"}</div><div className="text-[11px] text-[#84939E] mt-1">{notice.requester} tərəfindən <span className="text-[#D78A4A]">{target?.label}</span> mərhələsinə göndərilib.</div></div><div className="flex gap-2 shrink-0"><button onClick={() => onAccept(notice)} className="px-3 py-2 rounded-md bg-[#7FA98B] text-[#102017] text-[11px] font-bold">Qəbul et</button><button onClick={() => onReject(notice)} className="px-3 py-2 rounded-md border border-[#D77464]/50 text-[#E58A7C] text-[11px] font-bold hover:bg-[#D77464]/10">İmtina et</button></div></div>; })}</div>
+  </section>;
+}
+function RejectModal({ notice, reason, setReason, onClose, onSubmit }: { notice: Notice; reason: string; setReason: (value: string) => void; onClose: () => void; onSubmit: () => void }) {
+  return <div className="fixed inset-0 z-50 bg-[#02070B]/75 backdrop-blur-sm flex items-center justify-center p-4"><div className="w-full max-w-md rounded-2xl border border-[#D77464]/30 bg-[#0D1C29] shadow-2xl overflow-hidden"><div className="p-6 border-b border-white/[.08]"><div className="text-[10px] uppercase tracking-[.18em] text-[#D77464] font-bold">İmtina protokolu · {notice.orderId}</div><h2 className="font-display text-2xl font-bold mt-2">Səbəbi qeyd et</h2><p className="text-xs text-[#81919E] mt-2">Sifariş əvvəlki sütunda qalacaq və bu səbəb alert kimi görünəcək.</p></div><div className="p-6"><textarea autoFocus value={reason} onChange={(e) => setReason(e.target.value)} rows={4} placeholder="İmtina səbəbini yaz..." className="w-full resize-none rounded-lg border border-white/10 bg-[#07121B] px-3.5 py-3 text-sm outline-none focus:border-[#D77464]" /><div className="flex justify-end gap-2 mt-4"><button onClick={onClose} className="px-4 py-2.5 rounded-lg text-xs text-[#91A0AA] hover:bg-white/5">Ləğv et</button><button onClick={onSubmit} className="px-4 py-2.5 rounded-lg bg-[#D77464] text-[#170D0B] text-xs font-bold">İmtinanı təsdiqlə</button></div></div></div></div>;
+}
+'''
+p.write_text(s[:start] + replacement + s[end:])
