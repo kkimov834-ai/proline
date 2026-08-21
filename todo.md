@@ -203,3 +203,10 @@
 - [x] production@proline üçün “İstehsalat”, polishing@proline üçün “Cilalama”, paint@proline üçün “Boyalama”, warehouse@proline üçün “Anbar” adlarını doğrula.
 - [x] Bütün hesablar üçün 010203 kodunu saxla və login testlərini yenilə.
 - [x] TypeScript, Vitest, production build və yeni canlı checkpoint-i tamamla.
+
+## @proline-siz login adları
+
+- [x] Giriş adlarını tam olaraq sifariş, istehsalat, cilalama, boyalama və anbar et.
+- [x] Client və server shared login xəritəsini yeni adlara keçir və 010203 kodunu saxla.
+- [x] Login form placeholder və testlərini yeni identifikatorlara uyğunlaşdır.
+- [x] Beş login, TypeScript, Vitest, production build və yeni canlı checkpoint-i tamamla.

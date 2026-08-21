@@ -3,11 +3,11 @@ import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
 const credentials = [
-  ["dispatcher@proline", "admin"],
-  ["production@proline", "production"],
-  ["polishing@proline", "polishing"],
-  ["paint@proline", "paint"],
-  ["warehouse@proline", "warehouse"],
+  ["sifariş", "admin"],
+  ["istehsalat", "production"],
+  ["cilalama", "polishing"],
+  ["boyalama", "paint"],
+  ["anbar", "warehouse"],
 ] as const;
 
 function createContext() {
@@ -40,6 +40,6 @@ describe("PROLINE board.login", () => {
   it("rejects an incorrect access code", async () => {
     const { ctx } = createContext();
     const caller = appRouter.createCaller(ctx);
-    await expect(caller.board.login({ email: "dispatcher@proline", code: "010204" })).rejects.toThrow("Email və ya giriş kodu yanlışdır.");
+    await expect(caller.board.login({ email: "sifariş", code: "010204" })).rejects.toThrow("Email və ya giriş kodu yanlışdır.");
   });
 });

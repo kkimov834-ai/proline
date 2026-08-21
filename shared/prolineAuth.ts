@@ -1,11 +1,11 @@
 export const PROLINE_ACCESS_CODE = "010203" as const;
 
 export const PROLINE_ROLE_MAP = {
-  "dispatcher@proline": { role: "admin", label: "Sifariş" },
-  "production@proline": { role: "production", label: "İstehsalat", column: "production" },
-  "polishing@proline": { role: "polishing", label: "Cilalama", column: "polishing" },
-  "paint@proline": { role: "paint", label: "Boyalama", column: "paint" },
-  "warehouse@proline": { role: "warehouse", label: "Anbar", column: "warehouse" },
+  "sifariş": { role: "admin", label: "Sifariş" },
+  "istehsalat": { role: "production", label: "İstehsalat", column: "production" },
+  "cilalama": { role: "polishing", label: "Cilalama", column: "polishing" },
+  "boyalama": { role: "paint", label: "Boyalama", column: "paint" },
+  "anbar": { role: "warehouse", label: "Anbar", column: "warehouse" },
 } as const;
 
 export type ProlineEmail = keyof typeof PROLINE_ROLE_MAP;
