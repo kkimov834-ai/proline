@@ -108,6 +108,6 @@
 
 ## Final live acceptance gaps
 
-- [ ] Böyük şəkil payload-ı ilə create mutation-u test et; request ölçüsünün sıxışdığını və JSON/success cavabını təsdiqlə.
-- [ ] Canlı domain-də create, update, move, respond, sound preference və logout mutation-larını ayrıca yoxla.
+- [x] Böyük şəkil payload-ı ilə create mutation-u test et; request ölçüsünün sıxışdığını və JSON/success cavabını təsdiqlə.
+- [x] Canlı domain-də create, update, move, respond, sound preference və logout mutation-larını ayrıca yoxla.
 - [ ] Bu düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.

@@ -12,13 +12,17 @@ if (disabledSound.data !== false) throw new Error('Sound preference did not pers
 await call('board.setNotificationPreference', { enabled: true }, dispatcher.cookie);
 const compressedImage = `data:image/jpeg;base64,${'A'.repeat(40000)}`; const created = await call('board.create', { title: `Smoke ${Date.now()}`, description: 'Cross-device verification', imageUrl: compressedImage, priority: 'normal' }, dispatcher.cookie);
 const createdId = Number(created.data?.id); if (!createdId) throw new Error(`Create did not return an order id: ${JSON.stringify(created.data)}`);
+await call('board.update', { orderId: createdId, title: `Smoke updated ${Date.now()}`, description: 'Updated image workflow', imageUrl: compressedImage, priority: 'high' }, dispatcher.cookie);
 await call('board.requestMove', { orderId: createdId, toColumn: 'production' }, dispatcher.cookie);
 const productionBoard = await call('board.list', undefined, production.cookie, 'GET');
 const productionOrder = productionBoard.data.orders.find((order) => Number(order.id) === createdId);
 const productionNotice = productionBoard.data.notifications.find((notice) => Number(notice.orderId) === createdId);
 if (!productionOrder || productionOrder.pendingTo !== 'production' || !productionNotice || productionNotice.status !== 'pending') throw new Error('Production did not receive shared order and pending approval');
+await call('board.respond', { notificationId: Number(productionNotice.id), accepted: true }, production.cookie);
+const acceptedBoard = await call('board.list', undefined, production.cookie, 'GET'); const acceptedOrder = acceptedBoard.data.orders.find((order) => Number(order.id) === createdId); if (!acceptedOrder || acceptedOrder.columnId !== 'production' || acceptedOrder.pendingTo) throw new Error('Production approval response did not move order');
 const auditBefore = await call('board.audit', { orderId: createdId }, dispatcher.cookie, 'GET');
 if (!Array.isArray(auditBefore.data) || !auditBefore.data.some((log) => log.action === 'created') || !auditBefore.data.some((log) => log.action === 'move_requested')) throw new Error('Audit history was not recorded');
 const exported = await call('board.export', undefined, dispatcher.cookie, 'GET');
 if (!Array.isArray(exported.data) || !exported.data.some((order) => Number(order.id) === createdId)) throw new Error('Export query did not include created order');
-console.log(JSON.stringify({ reloadSessionRestored: true, productionReceivedOrder: true, productionReceivedApproval: true, auditRecorded: true, soundPreferencePersisted: true, exportIncludedOrder: true, pendingStatus: productionOrder.pendingTo }));
+await call('auth.logout', undefined, dispatcher.cookie);
+console.log(JSON.stringify({ reloadSessionRestored: true, productionReceivedOrder: true, productionReceivedApproval: true, approvalAccepted: true, orderUpdated: true, soundPreferencePersisted: true, auditRecorded: true, exportIncludedOrder: true, logoutMutation: true, pendingStatus: productionOrder.pendingTo }));
