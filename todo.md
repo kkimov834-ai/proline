@@ -61,11 +61,38 @@
 - [x] `soundEnabled` state-ni notification/order audio trigger-lərinə bağla və söndürüləndə səsin dayanmasını təsdiqlə.
 - [x] Board üzərində sifariş modalından kənar ayrıca audit timeline paneli göstər.
 - [x] CSV/XLS export, audit paneli və sound toggle üçün konkret smoke/manual yoxlama apar.
-- [ ] Son düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.
+- [x] Son düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.
 
 ## Create 500 və sound UI bugfix
 
 - [x] Browser-da təsdiqlənən `board.create` 500 xətasının server səbəbini tapıb düzəlt.
 - [x] Bildiriş səsi kontrolunu yalnız ikon deyil, aydın mətnli aktiv/deaktiv düymə kimi göstər.
 - [x] Create + şəkil, sound toggle, export və approval axınlarını yenidən yoxla.
+- [x] Yeni bugfix checkpoint-i yaradıb canlı linki təqdim et.
+
+## Mutation HTML response bugfix
+
+- [x] HTML response qaytaran mutation sorğusunun konkret endpoint və gateway səbəbini lokallaşdır.
+- [x] Mutation sorğularının düzgün `/api/trpc` route-una JSON qaytarmasını təmin et.
+- [x] API mutation error handling-i və create/approval/sound mutation axınlarını yenidən test et.
 - [ ] Yeni bugfix checkpoint-i yaradıb canlı linki təqdim et.
+
+## Full application audit
+
+- [x] Frontend komponentləri, tRPC transportu və auth loading/error davranışını audit et.
+- [x] Backend router, database helper-ləri, schema migration və bütün RBAC yoxlamalarını audit et.
+- [x] Login, reload, logout və iki sessiyalı cross-device axınlarını yoxla.
+- [x] Sifariş create/edit/image, drag-drop approval, reject reason və timer axınlarını yoxla.
+- [x] Sound preference, notification, audit timeline və CSV/XLS export axınlarını yoxla.
+- [x] 500/HTML API xətasını reproduce edib kök səbəbini düzəlt.
+- [x] Vitest, TypeScript, production build, API smoke və responsive preview yoxlamalarını tamamla.
+- [ ] Son stabil checkpoint-i yaradıb canlı linki təqdim et.
+
+- [x] Login-siz session yoxlamasını generic 500 deyil, düzgün UNAUTHORIZED/401 tRPC cavabına çevir və client-də sakit idarə et.
+
+## Full audit frontend acceptance gaps
+
+- [x] CSV və XLS export düymələrinin browserdən real fayl endirməsini yoxla.
+- [x] Test sifarişi ilə audit timeline panelinin board-da renderini browser preview-da yoxla.
+- [x] Sound toggle UI-dan deaktiv etdikdə notification səsinin dayandığını yoxla.
+- [x] Preview/browser mutation sorğusunun HTML deyil JSON qaytardığını təsdiqlə.
