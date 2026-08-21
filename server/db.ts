@@ -1,6 +1,6 @@
 import { and, desc, eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { prolineAuditLogs, prolineNotifications, prolineOrders, users, type InsertProlineOrder, type InsertUser } from "../drizzle/schema";
+import { prolineAuditLogs, prolineComments, prolineNotifications, prolineOrders, users, type InsertProlineOrder, type InsertUser } from "../drizzle/schema";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() { if (!_db && process.env.DATABASE_URL) { try { _db = drizzle(process.env.DATABASE_URL); } catch (error) { console.warn("[Database] Failed to connect:", error); _db = null; } } return _db; }
@@ -14,3 +14,5 @@ export async function getAuditLogs(orderId?: number) { const db = await getDb();
 export async function getNotificationPreference(email: string) { const db = await getDb(); if (!db) return true; const rows = await db.select({ notificationSound: users.notificationSound }).from(users).where(eq(users.email, email)).limit(1); return rows[0]?.notificationSound ?? true; }
 export async function setNotificationPreference(email: string, enabled: boolean) { const db = await getDb(); if (!db) throw new Error("Database unavailable"); await db.update(users).set({ notificationSound: enabled }).where(eq(users.email, email)); return enabled; }
 export async function exportOrders() { const db = await getDb(); if (!db) return []; return db.select().from(prolineOrders).orderBy(desc(prolineOrders.createdAt)); }
+export async function getComments(orderId: number) { const db = await getDb(); if (!db) return []; const rows = await db.select().from(prolineComments).where(eq(prolineComments.orderId, orderId)).orderBy(desc(prolineComments.createdAt)); return Promise.all(rows.map(async (comment) => { const author = await db.select({ name: users.name, email: users.email }).from(users).where(eq(users.id, comment.authorUserId)).limit(1); return { ...comment, authorName: author[0]?.name || author[0]?.email || "İşçi" }; })); }
+export async function addComment(input: { orderId: number; authorUserId: number; body: string }) { const db = await getDb(); if (!db) throw new Error("Database unavailable"); await db.insert(prolineComments).values(input); const rows = await db.select().from(prolineComments).where(and(eq(prolineComments.orderId, input.orderId), eq(prolineComments.authorUserId, input.authorUserId), eq(prolineComments.body, input.body))).orderBy(desc(prolineComments.createdAt)).limit(1); return rows[0]; }

@@ -63,3 +63,14 @@ export const prolineAuditLogs = mysqlTable("prolineAuditLogs", {
 
 export type ProlineAuditLog = typeof prolineAuditLogs.$inferSelect;
 export type InsertProlineAuditLog = typeof prolineAuditLogs.$inferInsert;
+
+export const prolineComments = mysqlTable("prolineComments", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: int("orderId").notNull(),
+  authorUserId: int("authorUserId").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ProlineComment = typeof prolineComments.$inferSelect;
+export type InsertProlineComment = typeof prolineComments.$inferInsert;

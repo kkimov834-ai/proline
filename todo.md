@@ -110,4 +110,22 @@
 
 - [x] Böyük şəkil payload-ı ilə create mutation-u test et; request ölçüsünün sıxışdığını və JSON/success cavabını təsdiqlə.
 - [x] Canlı domain-də create, update, move, respond, sound preference və logout mutation-larını ayrıca yoxla.
-- [ ] Bu düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.
+- [x] Bu düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.
+
+## Sifariş filtrləri və şərhlər
+
+- [x] Sifariş şərhləri üçün database cədvəli və migration yarat.
+- [x] Şərh əlavə etmə və sifariş üzrə şərhləri oxuma server prosedurlarını RBAC ilə əlavə et.
+- [x] Tarixdən/tarixədək, status və mətn üzrə filter/search state və panel əlavə et.
+- [x] Sifariş modalında işçi adı, tarix və mətnlə şərh timeline-ı və yeni şərh formu göstər.
+- [x] Cross-device filter və comments axınlarını, permission və error handling-i test et.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Responsive + filter + comments yenilənməsi
+
+- [x] Mobile, tablet və desktop layout-larında overflow, sütunlar, header və modal davranışını düzəlt.
+- [x] Sifariş şərhləri migration, helper və RBAC server prosedurlarını tamamla.
+- [x] Tarix, status və mətn üzrə filter panelini board-a əlavə et.
+- [x] Sifariş modalında işçi şərhləri timeline-ı və yeni şərh formunu əlavə et.
+- [x] 375px, 768px və 1280px viewport-larda responsive, filter və comments workflow-larını yoxla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
