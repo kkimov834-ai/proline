@@ -75,7 +75,7 @@
 - [x] HTML response qaytaran mutation sorğusunun konkret endpoint və gateway səbəbini lokallaşdır.
 - [x] Mutation sorğularının düzgün `/api/trpc` route-una JSON qaytarmasını təmin et.
 - [x] API mutation error handling-i və create/approval/sound mutation axınlarını yenidən test et.
-- [ ] Yeni bugfix checkpoint-i yaradıb canlı linki təqdim et.
+- [x] Yeni bugfix checkpoint-i yaradıb canlı linki təqdim et.
 
 ## Full application audit
 
@@ -86,7 +86,7 @@
 - [x] Sound preference, notification, audit timeline və CSV/XLS export axınlarını yoxla.
 - [x] 500/HTML API xətasını reproduce edib kök səbəbini düzəlt.
 - [x] Vitest, TypeScript, production build, API smoke və responsive preview yoxlamalarını tamamla.
-- [ ] Son stabil checkpoint-i yaradıb canlı linki təqdim et.
+- [x] Son stabil checkpoint-i yaradıb canlı linki təqdim et.
 
 - [x] Login-siz session yoxlamasını generic 500 deyil, düzgün UNAUTHORIZED/401 tRPC cavabına çevir və client-də sakit idarə et.
 
@@ -96,3 +96,18 @@
 - [x] Test sifarişi ilə audit timeline panelinin board-da renderini browser preview-da yoxla.
 - [x] Sound toggle UI-dan deaktiv etdikdə notification səsinin dayandığını yoxla.
 - [x] Preview/browser mutation sorğusunun HTML deyil JSON qaytardığını təsdiqlə.
+
+## Recurrent mutation HTML response
+
+- [x] Konkret HTML qaytaran mutation-u network/log vasitəsilə lokallaşdır.
+- [x] Client tRPC transportunda HTML fallback-i JSON xəta kimi maskalamayan düzəliş et.
+- [x] Serverdə `/api/trpc` route-unun mutation üçün JSON response qaytarmasını təmin et.
+- [x] Bütün əsas mutation-ları canlı URL-də test et və yeni checkpoint publish et.
+
+- [x] Böyük şəkil data URL-lərini client-də ölçü/quality ilə sıxışdırıb gateway 403 HTML mutation xətasını aradan qaldır.
+
+## Final live acceptance gaps
+
+- [ ] Böyük şəkil payload-ı ilə create mutation-u test et; request ölçüsünün sıxışdığını və JSON/success cavabını təsdiqlə.
+- [ ] Canlı domain-də create, update, move, respond, sound preference və logout mutation-larını ayrıca yoxla.
+- [ ] Bu düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.

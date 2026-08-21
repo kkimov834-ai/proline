@@ -10,7 +10,7 @@ await call('board.setNotificationPreference', { enabled: false }, dispatcher.coo
 const disabledSound = await call('board.notificationPreference', undefined, dispatcher.cookie, 'GET');
 if (disabledSound.data !== false) throw new Error('Sound preference did not persist');
 await call('board.setNotificationPreference', { enabled: true }, dispatcher.cookie);
-const created = await call('board.create', { title: `Smoke ${Date.now()}`, description: 'Cross-device verification', priority: 'normal' }, dispatcher.cookie);
+const compressedImage = `data:image/jpeg;base64,${'A'.repeat(40000)}`; const created = await call('board.create', { title: `Smoke ${Date.now()}`, description: 'Cross-device verification', imageUrl: compressedImage, priority: 'normal' }, dispatcher.cookie);
 const createdId = Number(created.data?.id); if (!createdId) throw new Error(`Create did not return an order id: ${JSON.stringify(created.data)}`);
 await call('board.requestMove', { orderId: createdId, toColumn: 'production' }, dispatcher.cookie);
 const productionBoard = await call('board.list', undefined, production.cookie, 'GET');
