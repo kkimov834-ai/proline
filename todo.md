@@ -45,4 +45,20 @@
 - [x] Mövcud database sifarişlərini təhlükəsiz şəkildə təmizlə və board-u boş başlat.
 - [x] Komanda/onlayn işçi status panelini header-dən sil.
 - [x] Permission, create, image preview, sound və empty board testlərini apar.
-- [ ] Yeni checkpoint yaradıb canlı linki təqdim et.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Səs, audit və export
+
+- [x] İstifadəçiyə bildiriş səsini aktiv/deaktiv edən toggle əlavə et və seçimi serverdə user preference kimi saxla.
+- [x] Sifariş yaradılması, redaktə, mərhələ sorğusu, qəbul və imtina hadisələri üçün audit log cədvəli yarat.
+- [x] Audit tarixçəsini sifariş modalında və ayrıca board panelində göstər.
+- [x] Sifarişləri CSV və Excel formatında export edən server proseduru və UI düymələri əlavə et.
+- [x] Migration, RBAC, export, audit və səs ayarı testlərini apar.
+- [x] Yeni checkpoint yaradıb canlı versiyanı təqdim et.
+
+## Son yoxlama boşluqları
+
+- [x] `soundEnabled` state-ni notification/order audio trigger-lərinə bağla və söndürüləndə səsin dayanmasını təsdiqlə.
+- [x] Board üzərində sifariş modalından kənar ayrıca audit timeline paneli göstər.
+- [x] CSV/XLS export, audit paneli və sound toggle üçün konkret smoke/manual yoxlama apar.
+- [x] Son düzəlişlərdən sonra yeni checkpoint yarat və canlı linki təqdim et.

@@ -4,6 +4,12 @@ const dispatcher = await call('board.login', { email: 'dispatcher@proline', code
 const production = await call('board.login', { email: 'production@proline', code: '010203' });
 const restoredSession = await call('board.session', undefined, dispatcher.cookie, 'GET');
 if (restoredSession.data?.email !== 'dispatcher@proline') throw new Error('Reload session was not restored');
+const initialSound = await call('board.notificationPreference', undefined, dispatcher.cookie, 'GET');
+if (typeof initialSound.data !== 'boolean') throw new Error('Sound preference was not returned');
+await call('board.setNotificationPreference', { enabled: false }, dispatcher.cookie);
+const disabledSound = await call('board.notificationPreference', undefined, dispatcher.cookie, 'GET');
+if (disabledSound.data !== false) throw new Error('Sound preference did not persist');
+await call('board.setNotificationPreference', { enabled: true }, dispatcher.cookie);
 const created = await call('board.create', { title: `Smoke ${Date.now()}`, description: 'Cross-device verification', priority: 'normal' }, dispatcher.cookie);
 const createdId = Number(created.data?.id); if (!createdId) throw new Error(`Create did not return an order id: ${JSON.stringify(created.data)}`);
 await call('board.requestMove', { orderId: createdId, toColumn: 'production' }, dispatcher.cookie);
@@ -11,4 +17,8 @@ const productionBoard = await call('board.list', undefined, production.cookie, '
 const productionOrder = productionBoard.data.orders.find((order) => Number(order.id) === createdId);
 const productionNotice = productionBoard.data.notifications.find((notice) => Number(notice.orderId) === createdId);
 if (!productionOrder || productionOrder.pendingTo !== 'production' || !productionNotice || productionNotice.status !== 'pending') throw new Error('Production did not receive shared order and pending approval');
-console.log(JSON.stringify({ reloadSessionRestored: true, productionReceivedOrder: true, productionReceivedApproval: true, pendingStatus: productionOrder.pendingTo }));
+const auditBefore = await call('board.audit', { orderId: createdId }, dispatcher.cookie, 'GET');
+if (!Array.isArray(auditBefore.data) || !auditBefore.data.some((log) => log.action === 'created') || !auditBefore.data.some((log) => log.action === 'move_requested')) throw new Error('Audit history was not recorded');
+const exported = await call('board.export', undefined, dispatcher.cookie, 'GET');
+if (!Array.isArray(exported.data) || !exported.data.some((order) => Number(order.id) === createdId)) throw new Error('Export query did not include created order');
+console.log(JSON.stringify({ reloadSessionRestored: true, productionReceivedOrder: true, productionReceivedApproval: true, auditRecorded: true, soundPreferencePersisted: true, exportIncludedOrder: true, pendingStatus: productionOrder.pendingTo }));

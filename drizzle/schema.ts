@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
@@ -11,6 +11,7 @@ export const users = mysqlTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  notificationSound: boolean("notificationSound").default(true).notNull(),
 });
 
 export const prolineOrders = mysqlTable("prolineOrders", {
@@ -48,3 +49,17 @@ export type ProlineOrder = typeof prolineOrders.$inferSelect;
 export type InsertProlineOrder = typeof prolineOrders.$inferInsert;
 export type ProlineNotification = typeof prolineNotifications.$inferSelect;
 export type InsertProlineNotification = typeof prolineNotifications.$inferInsert;
+
+export const prolineAuditLogs = mysqlTable("prolineAuditLogs", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: int("orderId"),
+  actorUserId: int("actorUserId").notNull(),
+  action: varchar("action", { length: 64 }).notNull(),
+  fromColumn: mysqlEnum("fromColumn", ["orders", "production", "polishing", "paint", "warehouse"]),
+  toColumn: mysqlEnum("toColumn", ["orders", "production", "polishing", "paint", "warehouse"]),
+  details: text("details"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ProlineAuditLog = typeof prolineAuditLogs.$inferSelect;
+export type InsertProlineAuditLog = typeof prolineAuditLogs.$inferInsert;
