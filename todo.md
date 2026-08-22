@@ -217,3 +217,13 @@
 - [x] Offline olduqda işçini siyahıdan avtomatik çıxar və online qayıtdıqda yenidən göstər.
 - [x] Müxtəlif cihazlarda heartbeat və polling ilə online siyahısını doğrula.
 - [x] Responsive online siyahısını, testləri və canlı checkpoint-i tamamla.
+
+## Mobil collapsible menyular və geniş tema sistemi
+
+- [x] Mobil online işçilər siyahısını açılıb-bağlanan kompakt menyuya çevir.
+- [x] Settings-də rəng seçimi və Excel şablon seçimini ayrıca collapsible bölmələr et.
+- [x] Tema seçimlərini minimum 10 fərqli rəng presetinə çatdır.
+- [x] Seçilən temanın bütün app səthlərinə, aksentlərinə və düymələrinə tətbiqini gücləndir.
+- [x] Bütün temalarda fon/yazı kontrastını və oxunaqlılığı düzəlt.
+- [x] 375px, 768px və 1280px görünüşlərini, testləri və production build-i yoxla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
