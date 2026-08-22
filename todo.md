@@ -210,3 +210,10 @@
 - [x] Client və server shared login xəritəsini yeni adlara keçir və 010203 kodunu saxla.
 - [x] Login form placeholder və testlərini yeni identifikatorlara uyğunlaşdır.
 - [x] Beş login, TypeScript, Vitest, production build və yeni canlı checkpoint-i tamamla.
+
+## Yalnız online işçilər
+
+- [x] Staff siyahısında yalnız online olan işçiləri göstər.
+- [x] Offline olduqda işçini siyahıdan avtomatik çıxar və online qayıtdıqda yenidən göstər.
+- [x] Müxtəlif cihazlarda heartbeat və polling ilə online siyahısını doğrula.
+- [x] Responsive online siyahısını, testləri və canlı checkpoint-i tamamla.
