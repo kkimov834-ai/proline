@@ -74,3 +74,17 @@ export const prolineComments = mysqlTable("prolineComments", {
 
 export type ProlineComment = typeof prolineComments.$inferSelect;
 export type InsertProlineComment = typeof prolineComments.$inferInsert;
+
+export const prolinePushSubscriptions = mysqlTable("prolinePushSubscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  endpoint: varchar("endpoint", { length: 2048 }).notNull().unique(),
+  p256dh: varchar("p256dh", { length: 255 }).notNull(),
+  auth: varchar("auth", { length: 255 }).notNull(),
+  userAgent: varchar("userAgent", { length: 512 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ProlinePushSubscription = typeof prolinePushSubscriptions.$inferSelect;
+export type InsertProlinePushSubscription = typeof prolinePushSubscriptions.$inferInsert;

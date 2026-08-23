@@ -6,9 +6,16 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import { startLogin } from "./const";
+import { registerProlineServiceWorker } from "@/lib/prolinePush";
 import "./index.css";
 
 const queryClient = new QueryClient();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    void registerProlineServiceWorker().catch((error) => console.warn("[PROLINE PWA] Service worker qeydiyyatı alınmadı:", error));
+  }, { once: true });
+}
 
 const isExpectedUnauthenticatedError = (error: unknown) => error instanceof TRPCClientError && error.message === "PROLINE session tələb olunur";
 

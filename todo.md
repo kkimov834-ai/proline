@@ -281,3 +281,26 @@
 - [x] İstehsalatdan Sifarişlərə keçiddə notification-un dispatcher/Sifariş hədəfinə yaradıldığını yoxla.
 - [x] Geri keçid bildirişinin Sifarişlər rolunda polling, tray və toast-da göründüyünü test et.
 - [x] 375px/768px modal davranışı, workflow testləri, TypeScript, production build və checkpoint-i tamamla.
+
+## Tam rol görünüşü, Admin icazələri və PWA bildirişləri
+
+- [x] Bütün şöbə rollarının beş sütundakı sifarişləri və mövcud tapşırıqları görməsini təmin et.
+- [x] Şöbə rollarında yalnız icazəli növbəti mərhələyə keçidi saxla və digər icazəsiz hərəkətləri gizlət.
+- [x] Excel çap/export, Settings-də Excel şablonları və Excel-ə aid bütün UI-ni yalnız Admin üçün göstər.
+- [x] Sifariş silmə proseduru və UI-ni yalnız Admin üçün əlavə et; backend RBAC ilə qoruyub sifarişlərin digər rollardan silinməzliyini saxla.
+- [x] Mobil sütunları alt-alta, notebook-da uyğun board düzülüşündə göstər.
+- [x] Mobil və desktop kart drag/drop keçidlərini sabitləşdir, approval notification axınını qoruyub test et.
+- [x] Foreground və background web notification, səs və PWA service worker əsasını qur.
+- [x] Bağlı PWA üçün push subscription/server notification imkanlarını və tələb olunan browser icazələrini tətbiq et.
+- [x] İki cihaz və beş rol üzrə workflow, responsive, permission/error handling, testlər və production build-i tamamla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## VAPID Web Push implementasiyası
+
+- [x] VAPID public/private açarlarını yaradıb mühit dəyişənləri kimi təhlükəsiz saxla.
+- [x] Push subscription-ları saxlamaq üçün database schema və migration əlavə et.
+- [x] Service worker və browser notification permission axınını qur.
+- [x] Mobil və desktop cihazlardan subscription qeydiyyatını serverə bağla.
+- [x] Sifariş və approval hadisələrini uyğun istifadəçi rollarına Web Push ilə göndər.
+- [x] Push payload, səs, permission və invalid subscription error handling-i test et.
+- [x] Production build, responsive yoxlama və yeni canlı checkpoint-i tamamla.
