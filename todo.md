@@ -257,3 +257,20 @@
 - [x] Form xəbərdarlığı, seçmə sahəsi və düymələrdə fon/yazı kontrastını düzəlt.
 - [x] Mobil modalın hündürlük, scroll və alt düymələr davranışını 375px ölçüdə yoxla.
 - [x] Tablet/desktop görünüşünü 768px və 1280px ölçülərində yoxla; testləri, TypeScript və production build-i tamamla.
+
+## Mobil drag və board scroll
+
+- [x] Mobil board-da kart drag edilərkən toxunma hadisələrini və üfüqi scroll davranışını audit et.
+- [x] Kart ekranın sağ/sol kənarına yaxınlaşdıqda board-u avtomatik üfüqi scroll et.
+- [x] Drag zamanı sütunların və approval hədəfinin görünən qalmasını təmin et.
+- [x] Mobil drag/drop və approval axınını 375px, 768px ölçülərində test et.
+- [x] TypeScript, Vitest, production build və yeni canlı checkpoint-i tamamla.
+
+## Mobil collapse və drag auto-scroll
+
+- [x] Sifariş kartlarında uzun açıqlama üçün “Tam göstər” və “Qısalt” düymələri əlavə et.
+- [x] Mobil kart və modal məzmununda uzun bölmələri yığcam/collapsible davranışa keçir.
+- [x] Mobil board-da kart sürüşdürülərkən kənara yaxınlaşdıqda üfüqi auto-scroll tətbiq et.
+- [x] Drag zamanı hədəf sütunun görünən qalmasını və approval keçidinin rahat tamamlanmasını təmin et.
+- [x] Filter, online işçilər, Settings, comments və modal bölmələrində mobil collapse/scroll davranışını audit et.
+- [x] 375px, 768px və 1280px görünüşləri, testlər, TypeScript, production build və canlı checkpoint-i tamamla.
