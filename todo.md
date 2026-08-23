@@ -326,3 +326,13 @@
 - [x] Department rollarında digər sütunları gizlət, mobil board-da görünən sütunu yan-yana horizontal layout kimi göstər.
 - [x] Desktop/mobile RBAC və drag/drop smoke testlərini, TypeScript və Vitest yoxlamalarını tamamla.
 - [x] Yeni checkpoint yaradıb yenilənmiş canlı linki təqdim et.
+
+## Department sütun strukturu və Settings qaydası — yeni tələb
+
+- [x] Department rolları bütün 5 sütun başlığını və strukturunu görsün, lakin yalnız öz sütunundakı sifariş kartları backend-dən qaytarılsın.
+- [x] Department kartlarındakı “Növbəti mərhələyə göndər” düyməsini sil; keçidi yalnız desktop/mobile drag-and-drop saxla.
+- [x] Mobile touch drag zamanı sifariş sürüşdürülərkən board-un üfüqi scroll-unu barmaq hərəkəti ilə sinxronlaşdır.
+- [x] Settings düyməsini və əsas settings bölmələrini bütün rollara göstər.
+- [x] Excel export, preview və Excel şablonlarını yalnız Sifariş/Admin rolunda göstər və backend guard-ı qoruyub test et.
+- [x] Yeni qaydalar üçün Vitest, TypeScript, build və responsive preview yoxlamalarını tamamla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
