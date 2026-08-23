@@ -249,3 +249,11 @@
 
 - [x] Preview yanında CSV/XLS format seçimi əlavə et və “Yüklə” düyməsini seçilmiş formata bağla.
 - [x] Preview yükləmə formatı və mobil görünüşü 375px, 768px və 1280px ölçülərində yenidən test edib yeni checkpoint yayımla.
+
+## Mobil sifariş kartı və forma düzəlişi
+
+- [x] Uzun sifariş açıqlamasının mobil kartdan kənara daşmasını və üfüqi overflow-u düzəlt.
+- [x] OrderForm fayl seçimi görünüşünü Azərbaycan dilində və tema ilə uyğun oxunaqlı hala gətir.
+- [x] Form xəbərdarlığı, seçmə sahəsi və düymələrdə fon/yazı kontrastını düzəlt.
+- [x] Mobil modalın hündürlük, scroll və alt düymələr davranışını 375px ölçüdə yoxla.
+- [x] Tablet/desktop görünüşünü 768px və 1280px ölçülərində yoxla; testləri, TypeScript və production build-i tamamla.
