@@ -336,3 +336,8 @@
 - [x] Excel export, preview və Excel şablonlarını yalnız Sifariş/Admin rolunda göstər və backend guard-ı qoruyub test et.
 - [x] Yeni qaydalar üçün Vitest, TypeScript, build və responsive preview yoxlamalarını tamamla.
 - [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Son struktur düzəlişi
+
+- [x] Department rolları üçün board renderini yalnız öz sütununa yox, bütün 5 sütun strukturuna keçir; sifariş siyahısı filtrini yalnız öz sütununda saxla.
+- [x] Yeni struktur davranışını authenticated preview-da yoxla və son checkpoint yarat.
