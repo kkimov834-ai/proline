@@ -227,3 +227,10 @@
 - [x] Bütün temalarda fon/yazı kontrastını və oxunaqlılığı düzəlt.
 - [x] 375px, 768px və 1280px görünüşlərini, testləri və production build-i yoxla.
 - [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Excel şablon önizləməsi
+
+- [x] Settings-də seçilmiş Excel şablonu üçün kompakt önizləmə cədvəli göstər.
+- [x] Önizləmədə Azərbaycan dilli sütun adlarını və nümunə məlumat quruluşunu göstər.
+- [x] Şablon dəyişəndə preview-ni dərhal yenilə və mobil ölçüdə üfüqi sürüşməni təmin et.
+- [x] Preview və export seçimlərini test et, TypeScript, production build və canlı checkpoint-i tamamla.
