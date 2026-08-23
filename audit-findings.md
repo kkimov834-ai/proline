@@ -25,3 +25,9 @@ Sınaq sifarişinin modalı canlı açıldı: açıqlama, audit tarixçəsi, ş�
 Production build uğurludur. 375px full-page screenshot session restore mərhələsində `SESSİYA BƏRPA OLUNUR...` mesajını göstərdi; bu snapshot zamanı autentikasiya hələ tamamlanmadığı üçün board elementləri görünmədi. Əvvəlki 895px canlı baxışda department board-un bütün 5 sütunu, filter və responsive quruluşu təsdiqlənmişdi.
 
 Canlı `prodorder-uadecxvr.manus.space` hələ bbc17c0a release-ni göstərdiyi üçün header online pillində `Kim Kimov` görünməyə davam edir. Lokal kodda staff siyahısı yalnız canonical beş hesabla filter edilib və yeni checkpoint-dən sonra bu köhnə ad canlıda görünməməlidir. Database-dən `kkimov834@gmail.com` hesabı artıq silinib.
+
+Yeni dəyişikliklərdən sonra desktop (1280px) və mobile (375px) preview-ları uğurlu render edildi. Login ekranı Industrial Command stilində, mobil ölçüdə overflow-suz və form controls toxunula bilən vəziyyətdədir. Board artıq `visibleColumns` əsasında render olunur və Admin üçün horizontal scroll class-ına, department üçün yalnız bir sütun görünüşünə malikdir.
+
+Lokal preview-da `istehsalat / 010203` ilə giriş yoxlanıldı. Board yalnız İstehsalat sütununu göstərir; Sifarişlər, Cilalama, Boyalama və Anbar başlıqları görünmür. Status filterində yalnız “Bütün sütunlar” və “İstehsalat” seçimləri qalır. Department üçün kartlar görünəndə növbəti mərhələyə göndərmə düyməsi göstərilir; hədəf mərhələnin sifarişləri board cavabından backend-də filtr edilir.
+
+Lokal browser sessiyasında İstehsalat rolu tam yoxlandı: yalnız İstehsalat sütunu görünür, status seçimlərində yalnız həmin sütun qalır və digər sütun başlıqları board-dan çıxarılıb. Webdev screenshot runner ayrıca sessiya cookie-si daşımadığı üçün mobile snapshot login ekranını göstərdi; mobil board davranışı authenticated browser sessiyasında kod və desktop preview ilə doğrulanmışdır.

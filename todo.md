@@ -317,3 +317,12 @@
 - [x] Industrial Command stilini, bütün rəng temalarını, kontrastı və modal/footer responsivliyini düzəlt.
 - [x] Bütün əvvəlki tələblər üzrə Vitest, TypeScript, production build və responsive smoke testlərini tamamla.
 - [x] Yeni tam-funksional checkpoint yaradıb canlı linki təqdim et.
+
+## Yeni department görünüş qaydası və mobil horizontal board
+
+- [x] Department rolları üçün yalnız öz sütunundakı sifarişləri göstərən görünüş qaydasını shared helper və testlərlə müəyyən et.
+- [x] Admin üçün bütün beş sütunun görünüşünü qoruyub department məlumatlarını backend/UI səviyyəsində məhdudlaşdır.
+- [x] Department istifadəçisinin yalnız növbəti mərhələyə sorğu göndərməsini, hədəf sifarişlərini görməməsini və approval axınını qoruyub test et.
+- [x] Department rollarında digər sütunları gizlət, mobil board-da görünən sütunu yan-yana horizontal layout kimi göstər.
+- [x] Desktop/mobile RBAC və drag/drop smoke testlərini, TypeScript və Vitest yoxlamalarını tamamla.
+- [x] Yeni checkpoint yaradıb yenilənmiş canlı linki təqdim et.

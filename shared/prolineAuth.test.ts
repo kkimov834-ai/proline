@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canProlineRoleMove, PROLINE_COLUMN_ORDER, PROLINE_ROLE_MAP } from "./prolineAuth";
+import { canProlineRoleMove, nextProlineColumn, PROLINE_COLUMN_ORDER, PROLINE_ROLE_MAP, visibleProlineColumns } from "./prolineAuth";
 
 describe("PROLINE role visibility and movement rules", () => {
   it("allows every role to view the complete five-column board", () => {
@@ -10,6 +10,21 @@ describe("PROLINE role visibility and movement rules", () => {
   it("uses the exact short Azerbaijani login identifiers", () => {
     expect(Object.keys(PROLINE_ROLE_MAP)).toEqual(["sifariş", "istehsalat", "cilalama", "boyalama", "anbar"]);
     expect(Object.keys(PROLINE_ROLE_MAP).some((email) => email.includes("@"))).toBe(false);
+  });
+
+  it("shows only the current department column and all columns to Admin", () => {
+    expect(visibleProlineColumns("production")).toEqual(["production"]);
+    expect(visibleProlineColumns("polishing")).toEqual(["polishing"]);
+    expect(visibleProlineColumns("paint")).toEqual(["paint"]);
+    expect(visibleProlineColumns("warehouse")).toEqual(["warehouse"]);
+    expect(visibleProlineColumns("admin")).toEqual(["orders", "production", "polishing", "paint", "warehouse"]);
+  });
+
+  it("identifies the next workflow stage", () => {
+    expect(nextProlineColumn("production")).toBe("polishing");
+    expect(nextProlineColumn("polishing")).toBe("paint");
+    expect(nextProlineColumn("paint")).toBe("warehouse");
+    expect(nextProlineColumn("warehouse")).toBeUndefined();
   });
 
   it("allows a department to request only the next stage", () => {
