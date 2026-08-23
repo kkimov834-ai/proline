@@ -1,5 +1,6 @@
 import { and, desc, eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { PROLINE_ROLE_MAP } from "@shared/prolineAuth";
 import {
   prolineAuditLogs,
   prolineComments,
@@ -62,8 +63,9 @@ export async function listBoardData(email: string) {
   if (!db) return { orders: [], notifications: [], staff: [] };
   const operator = await db.select().from(users).where(eq(users.email, email)).limit(1);
   await db.update(users).set({ lastSignedIn: new Date() }).where(eq(users.email, email));
+  const canonicalEmails = new Set(Object.keys(PROLINE_ROLE_MAP));
   const staffRows = await db.select({ email: users.email, name: users.name, prolineRole: users.prolineRole, lastSignedIn: users.lastSignedIn }).from(users);
-  const staff = staffRows.map((member) => ({ email: member.email || "", label: member.name || member.email || "Operator", online: Date.now() - new Date(member.lastSignedIn).getTime() < 45000 }));
+  const staff = staffRows.filter((member) => member.email && canonicalEmails.has(member.email)).map((member) => ({ email: member.email || "", label: member.name || member.email || "Operator", online: Date.now() - new Date(member.lastSignedIn).getTime() < 45000 }));
   const role = operator[0]?.prolineRole || "admin";
   const notifications = role === "admin"
     ? await db.select().from(prolineNotifications).where(or(and(eq(prolineNotifications.requesterUserId, operator[0]?.id || -1), eq(prolineNotifications.status, "pending")), and(eq(prolineNotifications.targetRole, "admin"), eq(prolineNotifications.status, "pending")))).orderBy(desc(prolineNotifications.createdAt))

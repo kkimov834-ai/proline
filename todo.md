@@ -304,3 +304,16 @@
 - [x] Sifariş və approval hadisələrini uyğun istifadəçi rollarına Web Push ilə göndər.
 - [x] Push payload, səs, permission və invalid subscription error handling-i test et.
 - [x] Production build, responsive yoxlama və yeni canlı checkpoint-i tamamla.
+
+## Tam funksional audit — istifadəçinin əvvəlki tələbləri
+
+- [x] Bütün rollar üçün real 5 sütun görünüşünü və sütun məlumatlarının backend-dən tam qaytarılmasını audit et.
+- [x] Department rollarında yalnız öz mərhələsindən növbəti mərhələyə keçidi backend və UI səviyyəsində doğrula.
+- [x] Approval zamanı sifarişi hədəf sütunda göstərməməyi, cavab gözlənilir statusunu və qəbul/imtina cavabını tam doğrula.
+- [x] Admin-only yaratma, redaktə, silmə, Excel export və Settings UI-lərini hər cihazda yoxla.
+- [x] Sifariş kartında şəkil, prioritet, timer, açıqlama collapse və status/imtina alert görünüşünü audit et.
+- [x] Axtarış, tarix/status filteri, şərhlər və audit tarixçəsini tam yoxla.
+- [x] Mobil sütunları alt-alta, touch drag/drop və ekran auto-scroll davranışını real preview-da yoxla.
+- [x] Industrial Command stilini, bütün rəng temalarını, kontrastı və modal/footer responsivliyini düzəlt.
+- [x] Bütün əvvəlki tələblər üzrə Vitest, TypeScript, production build və responsive smoke testlərini tamamla.
+- [x] Yeni tam-funksional checkpoint yaradıb canlı linki təqdim et.
