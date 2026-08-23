@@ -234,3 +234,18 @@
 - [x] Önizləmədə Azərbaycan dilli sütun adlarını və nümunə məlumat quruluşunu göstər.
 - [x] Şablon dəyişəndə preview-ni dərhal yenilə və mobil ölçüdə üfüqi sürüşməni təmin et.
 - [x] Preview və export seçimlərini test et, TypeScript, production build və canlı checkpoint-i tamamla.
+
+## Excel preview idarəetməsi
+
+- [x] Preview cədvəlinin başlıq, zolaqlı sətir və vurğu rənglərini aktiv tətbiq temasına avtomatik bağla.
+- [x] Preview sütunlarını gizlətmək/göstərmək üçün kompakt seçim idarəsi əlavə et.
+- [x] Preview sütunlarının sırasını dəyişmək üçün up/down idarəsi və ya sürüklə-burax funksiyası əlavə et.
+- [x] Seçilmiş sütun görünüşünü şablon və tema seçimi ilə uyğun saxla.
+- [x] Preview yanında birbaşa “Yüklə” düyməsi əlavə et və seçilmiş formatla export et.
+- [x] Mobil preview, column controls, export axını, TypeScript, Vitest və production build-i yoxla.
+- [x] Yeni checkpoint yaradıb canlı linki təqdim et.
+
+## Preview yükləmə formatı
+
+- [x] Preview yanında CSV/XLS format seçimi əlavə et və “Yüklə” düyməsini seçilmiş formata bağla.
+- [x] Preview yükləmə formatı və mobil görünüşü 375px, 768px və 1280px ölçülərində yenidən test edib yeni checkpoint yayımla.
