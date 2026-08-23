@@ -274,3 +274,10 @@
 - [x] Drag zamanı hədəf sütunun görünən qalmasını və approval keçidinin rahat tamamlanmasını təmin et.
 - [x] Filter, online işçilər, Settings, comments və modal bölmələrində mobil collapse/scroll davranışını audit et.
 - [x] 375px, 768px və 1280px görünüşləri, testlər, TypeScript, production build və canlı checkpoint-i tamamla.
+
+## Mobil modal və Sifarişlərə geri notification bug-u
+
+- [x] Mobil OrderModal-da Redaktə et action sahəsini görünən, sticky və toxunula bilən et.
+- [x] İstehsalatdan Sifarişlərə keçiddə notification-un dispatcher/Sifariş hədəfinə yaradıldığını yoxla.
+- [x] Geri keçid bildirişinin Sifarişlər rolunda polling, tray və toast-da göründüyünü test et.
+- [x] 375px/768px modal davranışı, workflow testləri, TypeScript, production build və checkpoint-i tamamla.
