@@ -358,3 +358,12 @@
 - [x] Görünməyən sütunlara drop, yalnız icazəli növbəti mərhələ üçün mümkün olsun.
 - [x] Kənar zonasından uzaqlaşanda və touch bitəndə auto-scroll loop dayansın.
 - [x] Mobile responsive preview, unit test və production build ilə yoxla.
+
+## Mobil UX və Auto-Scroll bugfix
+
+- [x] Edge drag auto-scroll-un real touch axınında işləməməsinin səbəbini tap və düzəlt.
+- [x] Drag zamanı board-u sabit horizontal scroll container kimi qur, kartın toxunma hərəkətini scroll ilə uyğunlaşdır.
+- [x] Drop target-i auto-scroll zamanı görünən və aydın vəziyyətdə saxla.
+- [x] Mobil header, statistikalar, filterlər, online işçilər və settings bölmələrini yığcamlaşdır.
+- [x] Mobil sütun/kart ölçülərini və spacing-i sadə, qarışıqlıq yaratmayan layout-a keçir.
+- [x] Authenticated mobile preview, drag/drop testləri, TypeScript, build və yeni checkpoint-i tamamla.

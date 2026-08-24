@@ -18,6 +18,28 @@ button { cursor: pointer; }
 ::-webkit-scrollbar-thumb { background: #2D4352; border-radius: 8px; }
 ::-webkit-scrollbar-thumb:hover { background: #D78A4A; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+@media (max-width: 640px) {
+  .proline-main { padding: 12px !important; }
+  .proline-main > section { margin-bottom: 16px !important; }
+  .proline-main > section:nth-of-type(2) { margin-bottom: 12px !important; }
+  .proline-main .proline-board { gap: 10px; padding-bottom: 12px; margin-inline: -2px; scroll-padding-inline: 2px; overscroll-behavior-x: contain; }
+  .proline-main .proline-board > div { min-width: calc(100vw - 24px) !important; width: calc(100vw - 24px) !important; max-width: calc(100vw - 24px); }
+  .proline-main .proline-board > div > div:first-child { padding: 12px; }
+  .proline-main .proline-board > div > div:nth-child(2) { min-height: 180px; padding: 9px; }
+  .proline-main .proline-board article { padding: 11px; }
+  .proline-main .proline-board article h3 { margin-top: 9px; line-height: 1.25rem; }
+  .proline-main .proline-board article img { height: 112px; }
+  .proline-main .proline-board article > div:last-child { margin-top: 11px; padding-top: 9px; }
+  .proline-main > footer { gap: 8px; align-items: flex-start; flex-wrap: wrap; line-height: 1.35; }
+  .proline-main .proline-audit { display: none; }
+  .proline-main h1 { font-size: 1.8rem; line-height: 2.1rem; }
+  .proline-main > section:nth-of-type(1) p { max-width: 31rem; font-size: .78rem; line-height: 1.2rem; }
+  .proline-main > section:nth-of-type(2) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .proline-main > section:nth-of-type(2) > div { padding: 10px; }
+
+}
+
 @layer base { * { @apply border-border outline-ring/50; } }
 
 .proline-theme-accent { color: var(--proline-accent, #D78A4A) !important; }
