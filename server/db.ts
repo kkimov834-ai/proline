@@ -1,6 +1,6 @@
 import { and, desc, eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { PROLINE_ROLE_MAP, visibleProlineColumns } from "@shared/prolineAuth";
+import { PROLINE_ROLE_MAP, ownProlineColumn } from "@shared/prolineAuth";
 import {
   prolineAuditLogs,
   prolineComments,
@@ -71,8 +71,8 @@ export async function listBoardData(email: string) {
     ? await db.select().from(prolineNotifications).where(or(and(eq(prolineNotifications.requesterUserId, operator[0]?.id || -1), eq(prolineNotifications.status, "pending")), and(eq(prolineNotifications.targetRole, "admin"), eq(prolineNotifications.status, "pending")))).orderBy(desc(prolineNotifications.createdAt))
     : await db.select().from(prolineNotifications).where(and(eq(prolineNotifications.targetRole, role), eq(prolineNotifications.status, "pending"))).orderBy(desc(prolineNotifications.createdAt));
   const allOrders = await db.select().from(prolineOrders).orderBy(desc(prolineOrders.createdAt));
-  const visibleColumns = visibleProlineColumns(role as "admin" | "production" | "polishing" | "paint" | "warehouse");
-  const orders = role === "admin" ? allOrders : allOrders.filter((order) => visibleColumns.includes(order.columnId));
+  const ownColumn = ownProlineColumn(role as "admin" | "production" | "polishing" | "paint" | "warehouse");
+  const orders = role === "admin" ? allOrders : allOrders.filter((order) => order.columnId === ownColumn);
   return { orders, notifications, staff };
 }
 

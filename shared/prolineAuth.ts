@@ -12,10 +12,17 @@ export type ProlineEmail = keyof typeof PROLINE_ROLE_MAP;
 export type ProlineRole = (typeof PROLINE_ROLE_MAP)[ProlineEmail]["role"];
 export const PROLINE_COLUMN_ORDER = ["orders", "production", "polishing", "paint", "warehouse"] as const;
 export type ProlineColumn = (typeof PROLINE_COLUMN_ORDER)[number];
+export function ownProlineColumn(role: ProlineRole): ProlineColumn | undefined {
+  const config = Object.values(PROLINE_ROLE_MAP).find((item) => item.role === role);
+  return config && "column" in config ? config.column : undefined;
+}
+
 export function visibleProlineColumns(role: ProlineRole): ProlineColumn[] {
   if (role === "admin") return [...PROLINE_COLUMN_ORDER];
-  const config = Object.values(PROLINE_ROLE_MAP).find((item) => item.role === role);
-  return config && "column" in config ? [config.column] : [];
+  const ownColumn = ownProlineColumn(role);
+  if (!ownColumn) return [];
+  const ownIndex = PROLINE_COLUMN_ORDER.indexOf(ownColumn);
+  return [ownColumn, PROLINE_COLUMN_ORDER[ownIndex + 1]].filter(Boolean) as ProlineColumn[];
 }
 
 export function nextProlineColumn(column: ProlineColumn): ProlineColumn | undefined {

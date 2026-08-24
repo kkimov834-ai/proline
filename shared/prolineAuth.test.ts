@@ -12,10 +12,10 @@ describe("PROLINE role visibility and movement rules", () => {
     expect(Object.keys(PROLINE_ROLE_MAP).some((email) => email.includes("@"))).toBe(false);
   });
 
-  it("shows only the current department column and all columns to Admin", () => {
-    expect(visibleProlineColumns("production")).toEqual(["production"]);
-    expect(visibleProlineColumns("polishing")).toEqual(["polishing"]);
-    expect(visibleProlineColumns("paint")).toEqual(["paint"]);
+  it("shows each department its own and immediate next column structure", () => {
+    expect(visibleProlineColumns("production")).toEqual(["production", "polishing"]);
+    expect(visibleProlineColumns("polishing")).toEqual(["polishing", "paint"]);
+    expect(visibleProlineColumns("paint")).toEqual(["paint", "warehouse"]);
     expect(visibleProlineColumns("warehouse")).toEqual(["warehouse"]);
     expect(visibleProlineColumns("admin")).toEqual(["orders", "production", "polishing", "paint", "warehouse"]);
   });

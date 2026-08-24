@@ -341,3 +341,11 @@
 
 - [x] Department rolları üçün board renderini yalnız öz sütununa yox, bütün 5 sütun strukturuna keçir; sifariş siyahısı filtrini yalnız öz sütununda saxla.
 - [x] Yeni struktur davranışını authenticated preview-da yoxla və son checkpoint yarat.
+
+## Öz və növbəti mərhələ görünüşü — yeni tələb
+
+- [x] Department görünüşünü öz sütunu + birbaşa növbəti sütun strukturuna məhdudlaşdır; yalnız öz sütunundakı kartları göstər.
+- [x] Department istifadəçisinin yalnız növbəti sütuna drag/drop keçidini backend və UI səviyyəsində qoruyub test et.
+- [x] Mobile drag zamanı pointer/touch hərəkətini board-un davamlı horizontal auto-scroll-u ilə birləşdir.
+- [x] Sifariş/Admin üçün bütün sütunları, Settings-i bütün rollarda və Excel-i yalnız Sifariş/Admin üçün saxla.
+- [x] Yeni RBAC və responsive davranış üçün test, build, preview və checkpoint tamamla.
