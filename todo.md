@@ -349,3 +349,12 @@
 - [x] Mobile drag zamanı pointer/touch hərəkətini board-un davamlı horizontal auto-scroll-u ilə birləşdir.
 - [x] Sifariş/Admin üçün bütün sütunları, Settings-i bütün rollarda və Excel-i yalnız Sifariş/Admin üçün saxla.
 - [x] Yeni RBAC və responsive davranış üçün test, build, preview və checkpoint tamamla.
+
+## Auto-Scroll on Edge Drag / Horizontal Drag Auto-scroll
+
+- [x] Kart mobil touch drag zamanı board-un sağ kənarına yaxınlaşanda davamlı sağa horizontal scroll etsin.
+- [x] Kart mobil touch drag zamanı board-un sol kənarına yaxınlaşanda davamlı sola horizontal scroll etsin.
+- [x] Auto-scroll davam edərkən drag kartı və drop target koordinatları yenilənsin.
+- [x] Görünməyən sütunlara drop, yalnız icazəli növbəti mərhələ üçün mümkün olsun.
+- [x] Kənar zonasından uzaqlaşanda və touch bitəndə auto-scroll loop dayansın.
+- [x] Mobile responsive preview, unit test və production build ilə yoxla.

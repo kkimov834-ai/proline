@@ -109,7 +109,8 @@ export default function Home() {
   const [dragged, setDragged] = useState<Order | null>(null);
   const [dropTarget, setDropTarget] = useState<ColumnId | null>(null);
   const boardRef = useRef<HTMLElement | null>(null);
-  const mobileDragRef = useRef<{ order: Order | null; startX: number; startY: number; active: boolean }>({ order: null, startX: 0, startY: 0, active: false });
+  const mobileDragRef = useRef<{ order: Order | null; startX: number; startY: number; lastX: number; lastY: number; active: boolean }>({ order: null, startX: 0, startY: 0, lastX: 0, lastY: 0, active: false });
+  const mobileAutoScrollFrame = useRef<number | null>(null);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [rejecting, setRejecting] = useState<Notice | null>(null);
   const [rejectReason, setRejectReason] = useState("");
@@ -163,10 +164,31 @@ export default function Home() {
   const pendingForUser = notices.filter((n) => isPendingNoticeForUser(n, user?.role || "admin", user?.userId || 0));
 
   useEffect(() => { if (!user) return; const id = window.setInterval(() => { heartbeatMutation.mutate(); }, 15000); return () => window.clearInterval(id); }, [user]);
+  function stopMobileAutoScroll() {
+    if (mobileAutoScrollFrame.current !== null) cancelAnimationFrame(mobileAutoScrollFrame.current);
+    mobileAutoScrollFrame.current = null;
+  }
+  function scheduleMobileAutoScroll() {
+    if (mobileAutoScrollFrame.current !== null) return;
+    const tick = () => {
+      mobileAutoScrollFrame.current = null;
+      const board = boardRef.current;
+      const pendingDrag = mobileDragRef.current;
+      if (!board || !pendingDrag.active || !pendingDrag.order) return;
+      const bounds = board.getBoundingClientRect();
+      const edge = Math.min(84, Math.max(48, bounds.width * 0.18));
+      const delta = autoScrollDelta(pendingDrag.lastX, bounds.left, bounds.right, edge, 12);
+      if (!delta) return;
+      board.scrollLeft = clampScrollLeft(board.scrollLeft + delta, board.scrollWidth, board.clientWidth);
+      mobileAutoScrollFrame.current = requestAnimationFrame(tick);
+    };
+    mobileAutoScrollFrame.current = requestAnimationFrame(tick);
+  }
   function startMobileDrag(order: Order, event: React.TouchEvent) {
     const touch = event.touches[0];
     if (!touch) return;
-    mobileDragRef.current = { order, startX: touch.clientX, startY: touch.clientY, active: false };
+    stopMobileAutoScroll();
+    mobileDragRef.current = { order, startX: touch.clientX, startY: touch.clientY, lastX: touch.clientX, lastY: touch.clientY, active: false };
     setDragged(null);
     setDropTarget(null);
   }
@@ -175,6 +197,8 @@ export default function Home() {
     const board = boardRef.current;
     const pendingDrag = mobileDragRef.current;
     if (!touch || !board || !pendingDrag.order) return;
+    pendingDrag.lastX = touch.clientX;
+    pendingDrag.lastY = touch.clientY;
     if (!pendingDrag.active) {
       const distance = Math.hypot(touch.clientX - pendingDrag.startX, touch.clientY - pendingDrag.startY);
       if (distance < 8) return;
@@ -186,10 +210,7 @@ export default function Home() {
     const followDelta = pendingDrag.startX - touch.clientX;
     if (followDelta) board.scrollLeft = clampScrollLeft(board.scrollLeft + followDelta, board.scrollWidth, board.clientWidth);
     pendingDrag.startX = touch.clientX;
-    const bounds = board.getBoundingClientRect();
-    const edge = Math.min(76, Math.max(44, bounds.width * 0.16));
-    const delta = autoScrollDelta(touch.clientX, bounds.left, bounds.right, edge, 22);
-    if (delta) board.scrollLeft = clampScrollLeft(board.scrollLeft + delta, board.scrollWidth, board.clientWidth);
+    scheduleMobileAutoScroll();
     const viewportDelta = autoScrollViewportDelta(touch.clientY, 0, window.innerHeight, 96, 26);
     if (viewportDelta) window.scrollBy({ top: viewportDelta, behavior: "auto" });
     const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest<HTMLElement>("[data-proline-column]");
@@ -199,14 +220,16 @@ export default function Home() {
     const pendingDrag = mobileDragRef.current;
     const touch = event.changedTouches[0];
     if (!pendingDrag.active || !pendingDrag.order) {
-      mobileDragRef.current = { order: null, startX: 0, startY: 0, active: false };
+      stopMobileAutoScroll();
+      mobileDragRef.current = { order: null, startX: 0, startY: 0, lastX: 0, lastY: 0, active: false };
       return;
     }
     event.preventDefault();
     const target = touch ? document.elementFromPoint(touch.clientX, touch.clientY)?.closest<HTMLElement>("[data-proline-column]") : null;
     const targetColumn = target?.dataset.prolineColumn as ColumnId | undefined;
     if (targetColumn) moveOrder(pendingDrag.order, targetColumn);
-    mobileDragRef.current = { order: null, startX: 0, startY: 0, active: false };
+    stopMobileAutoScroll();
+    mobileDragRef.current = { order: null, startX: 0, startY: 0, lastX: 0, lastY: 0, active: false };
     setDragged(null);
     setDropTarget(null);
   }
