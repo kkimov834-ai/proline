@@ -401,3 +401,10 @@
 - [x] 30–50px sağ/sol edge trigger və bir-sütunlu board scroll-u real touch axınında yoxla.
 - [x] Drop target və yalnız icazəli növbəti mərhələyə keçidi pointer drag ilə qoruyub test et.
 - [x] Mobil görünüş, login/session, Vitest, TypeScript və production build yoxlamalarını tamamla.
+
+## Mobile emulator drag/scroll blocking bug
+
+- [x] Chrome mobile emulyatorunda kart drag başlanmasının həqiqətən baş verdiyini görünən drag handle ilə təmin et.
+- [x] Board horizontal scroll-unu native touch pan-dan asılı etmədən manual pointer delta ilə işlət.
+- [x] Edge-də pointer hərəkəti dayananda davamlı auto-scroll və drop target yenilənməsini təmin et.
+- [x] Emulyatorda kartı sağ/sola aparıb görünməyən sütuna drop etmə axınını real yoxla.
