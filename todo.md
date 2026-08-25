@@ -478,3 +478,12 @@
 - [x] Mobil grip touch-end drop target və horizontal auto-scroll ilə Sifarişlər → İstehsalat keçidini yoxla.
 - [x] Pending approval notification-un digər cihazdakı İstehsalat hesabında görünməsini yoxla.
 - [x] Realistic browser smoke test, unit test, build və canlı checkpoint tamamla.
+
+## Simple responsive UX and status alerts
+
+- [x] Mobil kartın bütün səthindən başlayan, səhv klikdə modalı qoruyan asan touch drag davranışı qur.
+- [x] Mobil, tablet və desktop board/header/filter spacing-lərini sadələşdir və uyğunlaşdır.
+- [x] Toast alert-ləri yuxarı mərkəzə yerləşdir, uğuru yaşıl və xətanı qırmızı rənglə göstər.
+- [x] Xəta alert-ində başlıq, istifadəçiyə aydın mesaj və ayrıca HTTP/status kodu göstər.
+- [x] Uğursuz əməliyyatların bütün mutation catch axınlarını yeni alert formatter-dən keçirt.
+- [x] Responsive screenshot, unit test, TypeScript, production build və live checkpoint tamamla.
