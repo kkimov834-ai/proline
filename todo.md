@@ -367,3 +367,11 @@
 - [x] Mobil header, statistikalar, filterlər, online işçilər və settings bölmələrini yığcamlaşdır.
 - [x] Mobil sütun/kart ölçülərini və spacing-i sadə, qarışıqlıq yaratmayan layout-a keçir.
 - [x] Authenticated mobile preview, drag/drop testləri, TypeScript, build və yeni checkpoint-i tamamla.
+
+## Mobil rahat istifadə və scroll sadələşdirməsi
+
+- [x] Normal page vertical scroll-u touch drag başlamadığı halda problemsiz saxla.
+- [x] Board horizontal scroll-unu yalnız board daxilində və drag/gesture kontekstində işlət; səhifə scroll-u ilə toqquşmanı aradan qaldır.
+- [x] Kart drag başlanmasını aydınlaşdır, səhvən kart açılmasının və səhifənin ilişməsinin qarşısını al.
+- [x] Mobil board, filter və kart idarələrini yığcam və barmaqla rahat istifadə edilən ölçüyə gətir.
+- [x] Real mobil ölçüdə page scroll, board scroll və növbəti mərhələyə drop axınını yoxla.
