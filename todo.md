@@ -432,3 +432,11 @@
 - [x] Touch end-də elementFromPoint nəticəsi boş və ya kartın özü olduqda sütunu etibarlı şəkildə müəyyən et.
 - [x] Mobile drag tamamlananda requestMove mutation-un mütləq çağırıldığını network və unit test ilə yoxla.
 - [x] Approval response, RBAC və edge auto-scroll davranışını requestMove düzəlişindən sonra regressiya testindən keçir.
+
+## Desktop drag/scroll regression
+
+- [x] Noutbukda board-un əvvəlki native horizontal scroll davranışını bərpa et.
+- [x] Desktop native draggable kart, drag-over və drop event-lərini mobil touch handler-dən ayır.
+- [x] Desktop drag zamanı hədəf sütun, scroll və requestMove mutation axınını yoxla.
+- [x] Mobil touch auto-scroll və desktop scroll regressiyasını birlikdə test et.
+- [x] TypeScript, Vitest, production build və yeni checkpoint-i tamamla.
