@@ -470,3 +470,11 @@
 - [x] Çatışmayan funksiyaları tamamla və bütün testləri yenilə.
 - [x] Production build və responsive preview yoxlamalarını tamamla.
 - [x] Live checkpoint yarat və aktual faylları GitHub proline repozitoriyasına push et.
+
+## Orders-to-production drag/drop regression
+
+- [x] Sifarişlər kartının desktop native dragStart/dragEnd və dataTransfer davranışını yoxla.
+- [x] İstehsalat sütununda dragOver/drop event-lərinin kartı qəbul etdiyini və requestMove çağırdığını yoxla.
+- [x] Mobil grip touch-end drop target və horizontal auto-scroll ilə Sifarişlər → İstehsalat keçidini yoxla.
+- [x] Pending approval notification-un digər cihazdakı İstehsalat hesabında görünməsini yoxla.
+- [x] Realistic browser smoke test, unit test, build və canlı checkpoint tamamla.
