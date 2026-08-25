@@ -469,4 +469,4 @@
 - [x] PWA, VAPID push, notification sound, settings, themes və Excel preview/export axınlarını yoxla.
 - [x] Çatışmayan funksiyaları tamamla və bütün testləri yenilə.
 - [x] Production build və responsive preview yoxlamalarını tamamla.
-- [ ] Live checkpoint yarat və aktual faylları GitHub proline repozitoriyasına push et.
+- [x] Live checkpoint yarat və aktual faylları GitHub proline repozitoriyasına push et.
