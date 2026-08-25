@@ -416,3 +416,12 @@
 - [x] Grip handle üçün pointer capture, touch-action və cursor davranışını düzəlt.
 - [x] Handle əsaslı drag zamanı edge auto-scroll və növbəti sütuna drop-u yoxla.
 - [x] Emulyator, Vitest, TypeScript və production build nəticələrini təsdiqlə.
+
+## Xüsusi Touch & Auto-Scroll məntiqi
+
+- [x] Kart drag üçün onTouchStart, onTouchMove və onTouchEnd axınını əlavə et.
+- [x] onTouchMove-da touch.clientX-i window kənarları ilə müqayisə et.
+- [x] Sağ 50px-də hər 16ms intervalında container.scrollLeft += 10 et.
+- [x] Sol 50px-də hər 16ms intervalında container.scrollLeft -= 10 et.
+- [x] onTouchEnd-də elementFromPoint(clientX, clientY) ilə sütunu tapıb drop et.
+- [x] Düzgün sütun, RBAC və page scroll konfliktini test, TypeScript və build ilə yoxla.
