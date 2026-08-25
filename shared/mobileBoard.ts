@@ -1,6 +1,14 @@
-export function autoScrollDelta(clientX: number, left: number, right: number, edge = 76, speed = 22) {
+export function autoScrollDelta(clientX: number, left: number, right: number, edge = 60, speed = 20) {
   if (clientX < left + edge) return -speed;
   if (clientX > right - edge) return speed;
+  return 0;
+}
+
+export function edgeScrollSpeed(clientX: number, left: number, right: number, edge = 44, maxSpeed = 18) {
+  const leftDistance = clientX - left;
+  const rightDistance = right - clientX;
+  if (leftDistance >= 0 && leftDistance <= edge) return -Math.max(3, Math.round(maxSpeed * (1 - leftDistance / edge)));
+  if (rightDistance >= 0 && rightDistance <= edge) return Math.max(3, Math.round(maxSpeed * (1 - rightDistance / edge)));
   return 0;
 }
 

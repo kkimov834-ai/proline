@@ -384,3 +384,12 @@
 - [x] Edge auto-scroll, görünən drop target və yalnız icazəli növbəti mərhələyə keçidi test et.
 - [x] Xarici analytics 403/400 warning-lərini əsas PROLINE workflow xətalarından ayır və lazım olduqda təhlükəsiz şəkildə susdur.
 - [x] Login, mobile drag/drop, responsive preview, Vitest, TypeScript və build yoxlamalarını tamamla.
+
+## Mobile one-column edge auto-scroll refinement
+
+- [x] Mobil board-da hər viewport-da bir sütun görünəcək column width və spacing tətbiq et.
+- [x] Sağ kənardan 30–50px məsafədə kart drag ediləndə smooth horizontal scroll trigger et.
+- [x] Sol kənardan 30–50px məsafədə kart drag ediləndə smooth horizontal scroll trigger et.
+- [x] Touch drag zamanı auto-scroll loop, pointer koordinatı və drop target-i sinxron saxla.
+- [x] Scroll sürətini məsafəyə görə yumşaq dəyiş və sərhəddə dayan.
+- [x] Mobile drag/drop, RBAC, Vitest, TypeScript, build və responsive preview yoxlamalarını tamamla.
