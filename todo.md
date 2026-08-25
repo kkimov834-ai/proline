@@ -393,3 +393,11 @@
 - [x] Touch drag zamanı auto-scroll loop, pointer koordinatı və drop target-i sinxron saxla.
 - [x] Scroll sürətini məsafəyə görə yumşaq dəyiş və sərhəddə dayan.
 - [x] Mobile drag/drop, RBAC, Vitest, TypeScript, build və responsive preview yoxlamalarını tamamla.
+
+## Mobil auto-scroll ikinci bugfix
+
+- [x] Touch event əvəzinə pointer capture ilə kart drag axınını sabitləşdir.
+- [x] Pointer hərəkəti dayananda belə edge auto-scroll loop-unu davam etdir.
+- [x] 30–50px sağ/sol edge trigger və bir-sütunlu board scroll-u real touch axınında yoxla.
+- [x] Drop target və yalnız icazəli növbəti mərhələyə keçidi pointer drag ilə qoruyub test et.
+- [x] Mobil görünüş, login/session, Vitest, TypeScript və production build yoxlamalarını tamamla.
