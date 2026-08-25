@@ -408,3 +408,11 @@
 - [x] Board horizontal scroll-unu native touch pan-dan asılı etmədən manual pointer delta ilə işlət.
 - [x] Edge-də pointer hərəkəti dayananda davamlı auto-scroll və drop target yenilənməsini təmin et.
 - [x] Emulyatorda kartı sağ/sola aparıb görünməyən sütuna drop etmə axınını real yoxla.
+
+## Mobile card click/drag conflict
+
+- [x] Mobil drag başlanmasını yalnız ayrıca görünən grip handle üzərindən idarə et.
+- [x] Drag aktiv olduqda kartın click/modal açılmasını blokla; sadə toxunuşda modal açılmasını saxla.
+- [x] Grip handle üçün pointer capture, touch-action və cursor davranışını düzəlt.
+- [x] Handle əsaslı drag zamanı edge auto-scroll və növbəti sütuna drop-u yoxla.
+- [x] Emulyator, Vitest, TypeScript və production build nəticələrini təsdiqlə.
