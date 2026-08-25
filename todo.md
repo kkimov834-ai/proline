@@ -425,3 +425,10 @@
 - [x] Sol 50px-də hər 16ms intervalında container.scrollLeft -= 10 et.
 - [x] onTouchEnd-də elementFromPoint(clientX, clientY) ilə sütunu tapıb drop et.
 - [x] Düzgün sütun, RBAC və page scroll konfliktini test, TypeScript və build ilə yoxla.
+
+## Mobile requestMove not sent bug
+
+- [x] Touch start/move/end callback-lərinin real OrderCard grip elementinə bağlandığını təsdiqlə.
+- [x] Touch end-də elementFromPoint nəticəsi boş və ya kartın özü olduqda sütunu etibarlı şəkildə müəyyən et.
+- [x] Mobile drag tamamlananda requestMove mutation-un mütləq çağırıldığını network və unit test ilə yoxla.
+- [x] Approval response, RBAC və edge auto-scroll davranışını requestMove düzəlişindən sonra regressiya testindən keçir.
