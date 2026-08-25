@@ -13,11 +13,20 @@ export async function createContext(
 ): Promise<TrpcContext> {
   let user: User | null = null;
 
-  try {
-    user = await sdk.authenticateRequest(opts.req);
-  } catch (error) {
-    // Authentication is optional for public procedures.
-    user = null;
+  // PROLINE uses its own `proline_session` cookie/Bearer token for public
+  // tRPC procedures. Do not pass that Bearer token into Manus OAuth auth;
+  // Manus expects an app_session_id payload and logs it as an invalid 401.
+  const hasManusSessionCookie = (opts.req.headers.cookie || "")
+    .split(";")
+    .some((part) => part.trim().startsWith("app_session_id="));
+
+  if (hasManusSessionCookie) {
+    try {
+      user = await sdk.authenticateRequest(opts.req);
+    } catch {
+      // Authentication is optional for public procedures.
+      user = null;
+    }
   }
 
   return {

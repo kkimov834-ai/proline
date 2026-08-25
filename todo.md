@@ -449,3 +449,11 @@
 - [x] Hook-u mobil Kanban konteynerinə inteqrasiya et və scroll-smooth/touch davranışını düzəlt.
 - [x] Mobil və desktop drag/drop regressiyasını, testləri və production build-i yoxla.
 - [x] Yeni canlı checkpoint saxla.
+
+## Logout/login 400–401 auth regression
+
+- [x] Logout zamanı session token, query cache və mutation state cleanup axınını audit et.
+- [x] Login sonrası session token-in sabit saxlanmasını və protected query-lərin yalnız session hazır olduqda işləməsini düzəlt.
+- [x] 400/401 cavablarında təkrar login redirect loop-u və köhnə sorğuları aradan qaldır.
+- [x] Auth regressiya testləri, TypeScript, production build və live login/logout yoxlaması apar.
+- [x] Yeni canlı checkpoint saxla.
