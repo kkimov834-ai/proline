@@ -440,3 +440,12 @@
 - [x] Desktop drag zamanı hədəf sütun, scroll və requestMove mutation axınını yoxla.
 - [x] Mobil touch auto-scroll və desktop scroll regressiyasını birlikdə test et.
 - [x] TypeScript, Vitest, production build və yeni checkpoint-i tamamla.
+
+## Custom mobile touch auto-scroll
+
+- [x] `useTouchAutoScroll.js` hook-unu requestAnimationFrame ilə yaz.
+- [x] Hook-da 60px edge və hər frame-də 12px horizontal scroll qaydasını tətbiq et.
+- [x] onTouchEnd və onTouchCancel zamanı requestAnimationFrame-i ləğv et.
+- [x] Hook-u mobil Kanban konteynerinə inteqrasiya et və scroll-smooth/touch davranışını düzəlt.
+- [x] Mobil və desktop drag/drop regressiyasını, testləri və production build-i yoxla.
+- [ ] Yeni canlı checkpoint saxla.
