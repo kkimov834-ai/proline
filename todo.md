@@ -457,3 +457,16 @@
 - [x] 400/401 cavablarında təkrar login redirect loop-u və köhnə sorğuları aradan qaldır.
 - [x] Auth regressiya testləri, TypeScript, production build və live login/logout yoxlaması apar.
 - [x] Yeni canlı checkpoint saxla.
+
+## Full PROLINE audit and GitHub delivery
+
+- [x] Əvvəlki istifadəçi tələbləri ilə mövcud funksiyaların tam uyğunluğunu yoxla.
+- [x] Hər əməliyyatda çıxan 400/401 xətasını bütün mutation və query axınlarında tapıb düzəlt.
+- [x] Login/logout, reload session, çox-cihaz sync və online staff axınlarını yoxla.
+- [x] RBAC, 5 sütun görünüşü, approval/reject və yalnız icazəli əməliyyatları yoxla.
+- [x] Desktop və mobil drag/drop, horizontal scroll və custom touch auto-scroll-u yoxla.
+- [x] Sifariş, edit, şəkil, timer, comments, audit və filter funksiyalarını yoxla.
+- [x] PWA, VAPID push, notification sound, settings, themes və Excel preview/export axınlarını yoxla.
+- [x] Çatışmayan funksiyaları tamamla və bütün testləri yenilə.
+- [x] Production build və responsive preview yoxlamalarını tamamla.
+- [ ] Live checkpoint yarat və aktual faylları GitHub proline repozitoriyasına push et.
