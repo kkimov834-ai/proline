@@ -375,3 +375,12 @@
 - [x] Kart drag başlanmasını aydınlaşdır, səhvən kart açılmasının və səhifənin ilişməsinin qarşısını al.
 - [x] Mobil board, filter və kart idarələrini yığcam və barmaqla rahat istifadə edilən ölçüyə gətir.
 - [x] Real mobil ölçüdə page scroll, board scroll və növbəti mərhələyə drop axınını yoxla.
+
+## Login sessiyası və mobil drag/drop bugfix
+
+- [x] Login olmadan protected board query çağırılmasın və 401 sessiya xətası düzgün login ekranına yönlənsin.
+- [x] Login olduqdan sonra sessiya restore tamamlanana qədər board sorğusu gözləsin və reload-da məlumat itirməsin.
+- [x] Mobil kart drag/drop-u pointer/touch ilə real cihazda işlək et; kartın açılması və page scroll ilə konflikt yaratmasın.
+- [x] Edge auto-scroll, görünən drop target və yalnız icazəli növbəti mərhələyə keçidi test et.
+- [x] Xarici analytics 403/400 warning-lərini əsas PROLINE workflow xətalarından ayır və lazım olduqda təhlükəsiz şəkildə susdur.
+- [x] Login, mobile drag/drop, responsive preview, Vitest, TypeScript və build yoxlamalarını tamamla.
