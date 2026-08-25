@@ -448,4 +448,4 @@
 - [x] onTouchEnd və onTouchCancel zamanı requestAnimationFrame-i ləğv et.
 - [x] Hook-u mobil Kanban konteynerinə inteqrasiya et və scroll-smooth/touch davranışını düzəlt.
 - [x] Mobil və desktop drag/drop regressiyasını, testləri və production build-i yoxla.
-- [ ] Yeni canlı checkpoint saxla.
+- [x] Yeni canlı checkpoint saxla.
