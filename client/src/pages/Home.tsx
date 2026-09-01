@@ -298,7 +298,7 @@ export default function Home() {
       if (Math.abs(deltaY) > Math.abs(deltaX) * 1.15) { pendingDrag.axis = "vertical"; return; }
       pendingDrag.active = true;
       pendingDrag.axis = "horizontal";
-      board.style.touchAction = "none";
+      board.style.setProperty("touch-action", "none", "important");
       board.style.scrollSnapType = "none";
       suppressNextCardClickRef.current = true;
       setDragged(pendingDrag.order);
@@ -339,7 +339,7 @@ export default function Home() {
       if (Math.abs(deltaY) > Math.abs(deltaX) * 1.15) { pendingDrag.axis = "vertical"; return; }
       pendingDrag.active = true;
       pendingDrag.axis = "horizontal";
-      board.style.touchAction = "none";
+      board.style.setProperty("touch-action", "none", "important");
       board.style.scrollSnapType = "none";
       suppressNextCardClickRef.current = true;
       setDragged(pendingDrag.order);
@@ -373,7 +373,7 @@ export default function Home() {
   function cancelMobileDrag() {
     stopMobileAutoScroll();
     boardRef.current?.style.setProperty("scroll-behavior", "smooth");
-    boardRef.current?.style.setProperty("touch-action", "pan-y");
+    boardRef.current?.style.setProperty("touch-action", "pan-x pan-y", "important");
     boardRef.current?.style.setProperty("scroll-snap-type", "x proximity");
     mobileDragRef.current = { order: null, startX: 0, startY: 0, lastX: 0, lastY: 0, active: false, axis: "pending" };
     setDragged(null);
@@ -392,7 +392,7 @@ export default function Home() {
     if (targetColumn) void moveOrder(pendingDrag.order, targetColumn);
     stopMobileAutoScroll();
     boardRef.current?.style.setProperty("scroll-behavior", "smooth");
-    boardRef.current?.style.setProperty("touch-action", "pan-y");
+    boardRef.current?.style.setProperty("touch-action", "pan-x pan-y", "important");
     boardRef.current?.style.setProperty("scroll-snap-type", "x proximity");
     mobileDragRef.current = { order: null, startX: 0, startY: 0, lastX: 0, lastY: 0, active: false, axis: "pending" };
     setDragged(null);
