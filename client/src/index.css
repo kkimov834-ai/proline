@@ -1,4 +1,4 @@
-/* Industrial Command design system: ink navy, graphite trays, Forge Copper #D78A4A, Space Grotesk + DM Sans. */
+/* PROLINE monochrome design system: restrained, editorial, and high contrast. */
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
@@ -6,17 +6,17 @@
   --radius-sm: calc(var(--radius) - 4px); --radius-md: calc(var(--radius) - 2px); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) + 4px);
   --color-background: var(--background); --color-foreground: var(--foreground); --color-card: var(--card); --color-card-foreground: var(--card-foreground); --color-popover: var(--popover); --color-popover-foreground: var(--popover-foreground); --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground); --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground); --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground); --color-destructive: var(--destructive); --color-destructive-foreground: var(--destructive-foreground); --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring);
 }
-:root { --radius: .65rem; --background: #08121B; --foreground: #E9EEF2; --card: #0C1925; --card-foreground: #E9EEF2; --popover: #0D1C29; --popover-foreground: #E9EEF2; --primary: #D78A4A; --primary-foreground: #1B1713; --secondary: #122230; --secondary-foreground: #DDE5EA; --muted: #182936; --muted-foreground: #81919E; --accent: #D78A4A; --accent-foreground: #1B1713; --destructive: #D77464; --destructive-foreground: #fff; --border: rgba(255,255,255,.1); --input: rgba(255,255,255,.1); --ring: #D78A4A; }
+:root { --radius: .8rem; --background: #090909; --foreground: #f5f5f5; --card: #111111; --card-foreground: #f5f5f5; --popover: #141414; --popover-foreground: #f5f5f5; --primary: #f5f5f5; --primary-foreground: #0a0a0a; --secondary: #1b1b1b; --secondary-foreground: #e5e5e5; --muted: #191919; --muted-foreground: #969696; --accent: #f5f5f5; --accent-foreground: #0a0a0a; --destructive: #f5f5f5; --destructive-foreground: #0a0a0a; --border: rgba(255,255,255,.13); --input: rgba(255,255,255,.14); --ring: #f5f5f5; }
 * { box-sizing: border-box; }
-html { background: #08121B; }
-body { margin: 0; min-width: 320px; background: #08121B; color: #E9EEF2; font-family: "DM Sans", sans-serif; }
+html { background: #090909; }
+body { margin: 0; min-width: 320px; background: #090909; color: #f5f5f5; font-family: "DM Sans", sans-serif; letter-spacing: -.01em; }
 button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
-.font-display { font-family: "Space Grotesk", sans-serif; }
+.font-display { font-family: "Space Grotesk", sans-serif; letter-spacing: -.04em; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: rgba(255,255,255,.03); }
-::-webkit-scrollbar-thumb { background: #2D4352; border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: #D78A4A; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #3b3b3b; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #737373; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 
 @media (max-width: 640px) {
@@ -44,8 +44,41 @@ button { cursor: pointer; }
 
 @layer base { * { @apply border-border outline-ring/50; } }
 
-.proline-theme-accent { color: var(--proline-accent, #D78A4A) !important; }
-.proline-theme-border { border-color: color-mix(in srgb, var(--proline-accent, #D78A4A) 45%, transparent) !important; }
-.proline-theme-surface { background: var(--proline-surface, #0D1C29) !important; }
-.proline-theme-button { background-color: var(--proline-accent, #D78A4A) !important; }
-.proline-theme-button:hover { background-color: var(--proline-accent-hover, #E49A5A) !important; }
+.proline-theme-accent { color: #f5f5f5 !important; }
+.proline-theme-border { border-color: rgba(255,255,255,.55) !important; }
+.proline-theme-surface { background: #141414 !important; }
+.proline-theme-button { background-color: #f5f5f5 !important; color: #0a0a0a !important; }
+.proline-theme-button:hover { background-color: #d4d4d4 !important; }
+
+/* The production screen used bespoke colour utilities.  Keep its structure, while
+   enforcing one visual language across boards, dialogs and controls. */
+.proline-app { --proline-accent: #f5f5f5; --proline-accent-hover: #d4d4d4; --proline-glow: rgba(255,255,255,.06); --proline-surface: #0d0d0d; background: #090909 !important; background-image: none !important; color: #f5f5f5 !important; }
+.proline-app [style*="background-image"] { background-image: none !important; }
+.proline-app header { background: rgba(9,9,9,.9) !important; border-color: rgba(255,255,255,.12) !important; }
+.proline-app [class*="bg-[#"] { background-color: #141414 !important; }
+.proline-app [class*="text-[#"] { color: #c7c7c7 !important; }
+.proline-app [class*="border-[#"] { border-color: rgba(255,255,255,.16) !important; }
+.proline-app [class*="shadow-["] { box-shadow: none !important; }
+.proline-app [class*="bg-white/"] { background-color: rgba(255,255,255,.045) !important; }
+.proline-app [class*="border-white/"] { border-color: rgba(255,255,255,.13) !important; }
+.proline-app [class*="text-white"] { color: #f5f5f5 !important; }
+.proline-app input, .proline-app textarea, .proline-app select { background: #0b0b0b !important; color: #f5f5f5 !important; border-color: rgba(255,255,255,.16) !important; }
+.proline-app input::placeholder, .proline-app textarea::placeholder { color: #737373 !important; }
+.proline-app button { transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease; }
+.proline-app button:hover { border-color: rgba(255,255,255,.34); }
+.proline-app .proline-board > div { background: #111 !important; border-radius: 1rem; }
+.proline-app .proline-board article { background: #171717 !important; border: 1px solid rgba(255,255,255,.1); border-radius: .8rem; box-shadow: none !important; }
+.proline-app .proline-board article:hover { background: #1b1b1b !important; border-color: rgba(255,255,255,.25); }
+.proline-app .proline-theme-button, .proline-app [class*="bg-[#D78A4A]"] { background-color: #f5f5f5 !important; color: #090909 !important; border-color: #f5f5f5 !important; }
+.proline-app .proline-theme-button *, .proline-app [class*="bg-[#D78A4A]"] * { color: #090909 !important; }
+.proline-app .proline-board [style*="border-top"] { border-top-color: #f5f5f5 !important; }
+.proline-app .proline-board [style*="color"] { color: #d4d4d4 !important; }
+.proline-app .proline-audit { background: #101010 !important; }
+.proline-app .bg-white { background-color: #fff !important; color: #171717 !important; }
+.proline-app .bg-white [class*="text-[#"] { color: #262626 !important; }
+.proline-app[data-appearance="light"] { background: #f4f4f2 !important; color: #111 !important; }
+.proline-app[data-appearance="light"] header { background: rgba(244,244,242,.92) !important; border-color: rgba(0,0,0,.14) !important; }
+.proline-app[data-appearance="light"] [class*="bg-[#"], .proline-app[data-appearance="light"] .proline-board > div { background-color: #fff !important; }
+.proline-app[data-appearance="light"] [class*="text-[#"], .proline-app[data-appearance="light"] [class*="text-white"] { color: #202020 !important; }
+.proline-app[data-appearance="light"] [class*="border-"] { border-color: rgba(0,0,0,.13) !important; }
+.proline-app[data-appearance="light"] input, .proline-app[data-appearance="light"] textarea, .proline-app[data-appearance="light"] select, .proline-app[data-appearance="light"] .proline-board article { background: #f5f5f3 !important; color: #202020 !important; border-color: rgba(0,0,0,.12) !important; }

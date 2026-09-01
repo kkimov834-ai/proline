@@ -1,4 +1,4 @@
-/* Industrial Command design: dark ink surfaces, Forge Copper #D78A4A, Space Grotesk + DM Sans, tray-like workflow columns. */
+/* PROLINE uses a monochrome, high-contrast production workspace. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTouchAutoScroll } from "@/hooks/useTouchAutoScroll.js";
 import { trpc } from "@/lib/trpc";
@@ -67,11 +67,11 @@ const NOTICE_STORAGE = "proline-notices-v1";
 const users: Record<string, User> = Object.fromEntries(Object.entries(PROLINE_ROLE_MAP).map(([email, config]) => [email, { email, role: config.role as Role, label: config.label, column: ("column" in config ? config.column : undefined) as ColumnId | undefined }])) as Record<string, User>;
 const roleColumn: Record<Role, ColumnId | undefined> = { admin: undefined, production: "production", polishing: "polishing", paint: "paint", warehouse: "warehouse" };
 const columns: { id: ColumnId; label: string; detail: string; icon: typeof ClipboardList; color: string }[] = [
-  { id: "orders", label: "Sifarişlər", detail: "Yeni qəbul", icon: ClipboardList, color: "#91A5B7" },
-  { id: "production", label: "İstehsalat", detail: "Hazırlanır", icon: Zap, color: "#D78A4A" },
-  { id: "polishing", label: "Cilalama", detail: "Səth emalı", icon: Sparkles, color: "#A9B5C3" },
-  { id: "paint", label: "Boyalama", detail: "Son örtük", icon: SlidersHorizontal, color: "#9D8DB7" },
-  { id: "warehouse", label: "Anbar", detail: "Təhvilə hazır", icon: Archive, color: "#7FA98B" },
+  { id: "orders", label: "Sifarişlər", detail: "Yeni qəbul", icon: ClipboardList, color: "#f5f5f5" },
+  { id: "production", label: "İstehsalat", detail: "Hazırlanır", icon: Zap, color: "#f5f5f5" },
+  { id: "polishing", label: "Cilalama", detail: "Səth emalı", icon: Sparkles, color: "#f5f5f5" },
+  { id: "paint", label: "Boyalama", detail: "Son örtük", icon: SlidersHorizontal, color: "#f5f5f5" },
+  { id: "warehouse", label: "Anbar", detail: "Təhvilə hazır", icon: Archive, color: "#f5f5f5" },
 ];
 const seedOrders: Order[] = [];
 
@@ -79,32 +79,7 @@ function showOperationError(error: unknown, fallback: string) {
   toast.error("Xəta", { description: formatOperationError(error, fallback) });
 }
 const themePresets: ThemePreset[] = [
-  { id: "blue-gray", name: "Blue gray", description: "Sakit boz-mavi sənaye tonu.", accent: "#8290A6", accentHover: "#9BA8BC", glow: "rgba(130,144,166,.12)", surface: "#101922" },
-  { id: "brown", name: "Brown", description: "İsti qəhvəyi və qrafit kontrastı.", accent: "#8C6655", accentHover: "#A77B66", glow: "rgba(140,102,85,.12)", surface: "#1A1716" },
-  { id: "tomato", name: "Tomato", description: "Sakit pomidor qırmızısı.", accent: "#C85C3E", accentHover: "#DF7656", glow: "rgba(200,92,62,.12)", surface: "#211615" },
-  { id: "deep-orange", name: "Deep orange", description: "Dərin narıncı istehsalat aksenti.", accent: "#C96D2D", accentHover: "#E0873E", glow: "rgba(201,109,45,.12)", surface: "#211914" },
-  { id: "bright-orange", name: "Bright orange", description: "Aydın, amma yumşaq narıncı.", accent: "#D99122", accentHover: "#E9AA3A", glow: "rgba(217,145,34,.12)", surface: "#211B10" },
-  { id: "yellow", name: "Yellow", description: "Oxunaqlı sarı siqnal rəngi.", accent: "#C6BD2A", accentHover: "#D8CF4B", glow: "rgba(198,189,42,.12)", surface: "#1D1D10" },
-  { id: "bright-green", name: "Bright green", description: "Təmiz yaşıl status aksenti.", accent: "#68B63F", accentHover: "#83C95A", glow: "rgba(104,182,63,.12)", surface: "#111D14" },
-  { id: "green", name: "Green", description: "Balanslı klassik yaşıl.", accent: "#32A566", accentHover: "#51BE7E", glow: "rgba(50,165,102,.12)", surface: "#0E1C18" },
-  { id: "light-blue", name: "Light blue", description: "Yüngül mavi texniki görünüş.", accent: "#4DADD1", accentHover: "#6BC2DE", glow: "rgba(77,173,209,.12)", surface: "#0F1D25" },
-  { id: "sky-blue", name: "Sky blue", description: "Açıq göy və polad səthlər.", accent: "#3B9DD9", accentHover: "#60B5E8", glow: "rgba(59,157,217,.12)", surface: "#0D1B27" },
-  { id: "pale-blue", name: "Pale blue", description: "Yumşaq mavi, uzun istifadə üçün.", accent: "#7898C9", accentHover: "#94B0DA", glow: "rgba(120,152,201,.12)", surface: "#111A27" },
-  { id: "bright-blue", name: "Bright blue", description: "Güclü, aydın mavi aksent.", accent: "#2479D8", accentHover: "#4A98EF", glow: "rgba(36,121,216,.12)", surface: "#0C1725" },
-  { id: "deep-blue", name: "Deep blue", description: "Dərin mavi idarəetmə səthi.", accent: "#3850B8", accentHover: "#5A6BCF", glow: "rgba(56,80,184,.12)", surface: "#10152A" },
-  { id: "pale-indigo", name: "Pale indigo", description: "Sakit indigo və boz kontrast.", accent: "#6E78B2", accentHover: "#8C96CA", glow: "rgba(110,120,178,.12)", surface: "#151728" },
-  { id: "purple", name: "Purple", description: "Klassik bənövşəyi idarəetmə tonu.", accent: "#7250C5", accentHover: "#906EDC", glow: "rgba(114,80,197,.12)", surface: "#17132A" },
-  { id: "pale-purple", name: "Pale purple", description: "Yumşaq bənövşəyi və qrafit.", accent: "#7771B4", accentHover: "#9690CB", glow: "rgba(119,113,180,.12)", surface: "#17172A" },
-  { id: "violet", name: "Violet", description: "Dərin violet, sakit premium görünüş.", accent: "#7D35C8", accentHover: "#9958DB", glow: "rgba(125,53,200,.12)", surface: "#19122B" },
-  { id: "pale-violet", name: "Pale violet", description: "Yumşaq violet texniki palitra.", accent: "#765DAD", accentHover: "#9278C6", glow: "rgba(118,93,173,.12)", surface: "#171629" },
-  { id: "dark-pink", name: "Dark pink", description: "Tünd çəhrayı sənaye aksenti.", accent: "#9E3CBA", accentHover: "#B85BD1", glow: "rgba(158,60,186,.12)", surface: "#201326" },
-  { id: "bright-pink", name: "Bright pink", description: "Aydın, ölçülü çəhrayı.", accent: "#B938D1", accentHover: "#D25DE5", glow: "rgba(185,56,209,.12)", surface: "#211329" },
-  { id: "pink", name: "Pink", description: "Balanslı çəhrayı görünüş.", accent: "#C044B4", accentHover: "#D667C9", glow: "rgba(192,68,180,.12)", surface: "#201427" },
-  { id: "magenta", name: "Magenta", description: "Dərin magenta vurğu.", accent: "#CC2F87", accentHover: "#E34FA0", glow: "rgba(204,47,135,.12)", surface: "#211321" },
-  { id: "bright-red", name: "Bright red", description: "Aydın qırmızı xəbərdarlıq tonu.", accent: "#D52E61", accentHover: "#E84E7A", glow: "rgba(213,46,97,.12)", surface: "#23131A" },
-  { id: "pale-red", name: "Pale red", description: "Yumşaq qırmızı, göz yormayan.", accent: "#B84A69", accentHover: "#D16C86", glow: "rgba(184,74,105,.12)", surface: "#21151C" },
-  { id: "deep-red", name: "Deep red", description: "Dərin qırmızı təhlükəsizlik palitrası.", accent: "#B9233A", accentHover: "#D14255", glow: "rgba(185,35,58,.12)", surface: "#211214" },
-  { id: "red", name: "Red", description: "Klassik qırmızı status aksenti.", accent: "#D72A2A", accentHover: "#E64C4C", glow: "rgba(215,42,42,.12)", surface: "#211313" },
+  { id: "monochrome", name: "Monochrome", description: "PROLINE üçün sabit qara-ağ premium görünüş.", accent: "#f5f5f5", accentHover: "#d4d4d4", glow: "rgba(255,255,255,.06)", surface: "#090909" },
 ];
 
 /* Mock data intentionally disabled: PROLINE starts with a clean board. */
@@ -112,7 +87,7 @@ const themePresets: ThemePreset[] = [
 
 function formatDate(value: string | Date) { return formatProlineDate(value); }
 function todayLabel() { return formatProlineDate(new Date()); }
-function priorityMeta(priority: Priority) { return ({ low: ["Aşağı", "#91A5B7"], normal: ["Normal", "#7FA98B"], high: ["Yüksək", "#D7B45A"], urgent: ["Təcili", "#D77464"] } as const)[priority]; }
+function priorityMeta(priority: Priority) { return ({ low: ["Aşağı", "#a3a3a3"], normal: ["Normal", "#d4d4d4"], high: ["Yüksək", "#e5e5e5"], urgent: ["Təcili", "#ffffff"] } as const)[priority]; }
 function canEdit(user: User | null) { return user?.role === "admin"; }
 function canMove(user: User | null, from: ColumnId, to: ColumnId) { return !!user && canProlineRoleMove(user.role, from, to); }
 
@@ -161,7 +136,7 @@ export default function Home() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const [sessionProbeEnabled, setSessionProbeEnabled] = useState(true);
-  const [themeId, setThemeId] = useState<ThemeId>(() => (window.localStorage.getItem("proline-theme") as ThemeId) || "blue-gray");
+  const [themeId, setThemeId] = useState<ThemeId>(() => "monochrome");
   const [appearance, setAppearance] = useState<Appearance>(() => window.localStorage.getItem("proline-appearance") === "light" ? "light" : "dark");
   const [columnLayouts, setColumnLayouts] = useState<Record<string, string[]>>(() => { try { return JSON.parse(window.localStorage.getItem("proline-excel-columns") || "{}"); } catch { return {}; } });
   const activeTheme = themePresets.find((theme) => theme.id === themeId) || themePresets[0];
@@ -448,8 +423,8 @@ export default function Home() {
 
 
   if (!user && sessionQuery.isLoading && !loggingOut) return <div className="min-h-screen bg-[#08121B] text-[#E9EEF2] flex items-center justify-center"><div className="text-xs uppercase tracking-[.18em] text-[#D78A4A] proline-theme-accent">Sessiya bərpa olunur...</div></div>;
-  if (!user) return <LoginScreen name={name} email={email} code={code} setName={setName} setEmail={setEmail} setCode={setCode} error={loginError} onSubmit={login} />;
-  return <div data-appearance={appearance} className={`min-h-screen bg-[#08121B] text-[#E9EEF2] ${appearance === "light" ? "proline-light" : ""}`} style={{ backgroundColor: appearance === "light" ? "#F2F5F7" : activeTheme.surface, backgroundImage: `linear-gradient(rgba(8,18,27,.94), rgba(8,18,27,.97)), radial-gradient(circle at 85% 0%, ${activeTheme.glow}, transparent 34%), url('/manus-storage/proline-grid_53b97e55.png')`, backgroundSize: "cover", backgroundAttachment: "fixed", "--proline-accent": activeTheme.accent, "--proline-accent-hover": activeTheme.accentHover, "--proline-glow": activeTheme.glow, "--proline-surface": activeTheme.surface } as React.CSSProperties}>
+  if (!user) return <div className="proline-app"><LoginScreen name={name} email={email} code={code} setName={setName} setEmail={setEmail} setCode={setCode} error={loginError} onSubmit={login} /></div>;
+  return <div data-appearance={appearance} className={`proline-app min-h-screen bg-[#08121B] text-[#E9EEF2] ${appearance === "light" ? "proline-light" : ""}`} style={{ backgroundColor: appearance === "light" ? "#f4f4f2" : "#090909", "--proline-accent": "#f5f5f5", "--proline-accent-hover": "#d4d4d4", "--proline-glow": "rgba(255,255,255,.06)", "--proline-surface": "#090909" } as React.CSSProperties}>
     <header className="min-h-[76px] border-b border-white/[.08] bg-[#0B1823]/90 backdrop-blur-xl flex items-center justify-between gap-3 px-3 sm:px-5 lg:px-9 py-3 sticky top-0 z-30">
       <div className="flex items-center gap-3"><img src="/manus-storage/proline-logo_8e1fe1d1.png" className="h-10 w-10 object-contain" alt="PROLINE" /><div><div className="font-display text-[17px] font-bold tracking-[.16em] leading-none">PROLINE</div><div className="text-[10px] uppercase tracking-[.2em] text-[#8292A0] mt-1">Production control</div></div></div>
       <div className="hidden md:flex items-center gap-5 text-xs text-[#8292A0]"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7FA98B] shadow-[0_0_10px_#7FA98B]" /> Sistem aktivdir</span><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7FA98B]" /> {user.label} onlayn</span><span className="h-5 w-px bg-white/10" /><span>{todayLabel()}</span></div>
@@ -632,7 +607,7 @@ function SettingsPanel({ canExport, appearance, setAppearance, templateId, setTe
         <div>
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[.16em] font-bold proline-theme-accent"><Settings size={13} /> Sistem ayarları</div>
           <h2 className="font-display text-xl sm:text-2xl font-bold mt-2">PROLINE Settings</h2>
-          <p className="text-xs leading-5 text-[#B7C3CB] mt-2 max-w-lg">Tema seçimlərini buradan idarə edin.{canExport ? " Excel çıxış ayarları da bu bölmədədir." : ""}</p>
+          <p className="text-xs leading-5 text-[#B7C3CB] mt-2 max-w-lg">Sadə, monoxrom görünüş və çıxış ayarlarını buradan idarə edin.{canExport ? " Excel çıxış ayarları da bu bölmədədir." : ""}</p>
         </div>
         <button onClick={onClose} aria-label="Settings-i bağla" className="p-2 rounded-lg text-[#B7C3CB] hover:bg-white/10"><X size={18} /></button>
       </div>
@@ -644,7 +619,7 @@ function SettingsPanel({ canExport, appearance, setAppearance, templateId, setTe
         <section className="rounded-xl border border-white/[.1] overflow-hidden p-4"><div className="text-[10px] uppercase tracking-[.14em] font-bold text-[#AAB9C4]">Görünüş rejimi</div><div className="grid grid-cols-2 gap-2 mt-3"><button type="button" onClick={() => setAppearance("dark")} aria-pressed={appearance === "dark"} className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-bold transition ${appearance === "dark" ? "border-white/30 bg-white/[.1] text-white" : "border-white/[.1] text-[#91A0AA]"}`}><Moon size={15} /> Dark</button><button type="button" onClick={() => setAppearance("light")} aria-pressed={appearance === "light"} className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-3 text-xs font-bold transition ${appearance === "light" ? "border-white/30 bg-white/[.1] text-white" : "border-white/[.1] text-[#91A0AA]"}`}><Sun size={15} /> Light</button></div></section>
         <section className="rounded-xl border border-white/[.1] overflow-hidden">
           <button type="button" aria-expanded={themesOpen} onClick={() => setThemesOpen((open) => !open)} className="flex w-full items-center justify-between gap-3 p-4 text-left hover:bg-white/[.04]">
-            <span><span className="block text-[10px] uppercase tracking-[.14em] font-bold text-[#AAB9C4]">Rəngli tema</span><span className="block text-xs text-[#AAB9C4] mt-1">Göndərilən rəng palitralarından birini seçin; neon effektlər istifadə olunmur.</span></span>
+            <span><span className="block text-[10px] uppercase tracking-[.14em] font-bold text-[#AAB9C4]">Dizayn sistemi</span><span className="block text-xs text-[#AAB9C4] mt-1">PROLINE bütün ekranlarda sabit qara-ağ kontrastdan istifadə edir.</span></span>
             <span className="flex items-center gap-2 text-xs text-[#E8EEF2]"><span className="h-3 w-3 rounded-full" style={{ backgroundColor: activeTheme.accent }} />{themesOpen ? "Bağla" : activeTheme.name}<ChevronDown size={15} className={`transition-transform ${themesOpen ? "rotate-180" : ""}`} /></span>
           </button>
           {themesOpen && <div className="border-t border-white/[.08] p-3"><div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{themePresets.map((theme) => <button key={theme.id} type="button" onClick={() => setThemeId(theme.id)} aria-pressed={themeId === theme.id} className={`text-left rounded-xl border p-3.5 transition ${themeId === theme.id ? "border-white/50" : "border-white/[.1] hover:border-white/25"}`} style={{ background: `linear-gradient(135deg, ${theme.glow}, rgba(255,255,255,.025))` }}><div className="flex items-center gap-3"><span className="h-8 w-8 rounded-full border-2 border-white/25 shrink-0" style={{ background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentHover})`, boxShadow: `0 0 18px ${theme.glow}` }} /><span className="min-w-0"><span className="block text-sm font-semibold text-[#F1F5F7]">{theme.name}</span><span className="block text-[10px] leading-4 text-[#B7C3CB] mt-0.5">{theme.description}</span></span>{themeId === theme.id && <Check size={16} className="ml-auto shrink-0 proline-theme-accent" />}</div></button>)}</div></div>}
