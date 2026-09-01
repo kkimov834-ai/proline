@@ -11,13 +11,13 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/manus-storage/proline-logo_8e1fe1d1.png",
+      "src": "/assets/proline-logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/manus-storage/proline-logo_8e1fe1d1.png",
+      "src": "/assets/proline-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

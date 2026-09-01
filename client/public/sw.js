@@ -13,8 +13,8 @@ self.addEventListener("push", (event) => {
   const title = payload.title || "PROLINE";
   const options = {
     body: payload.body || "PROLINE panelində yeni məlumat var.",
-    icon: "/manus-storage/proline-logo_8e1fe1d1.png",
-    badge: "/manus-storage/proline-logo_8e1fe1d1.png",
+    icon: "/assets/proline-logo.png",
+    badge: "/assets/proline-logo.png",
     tag: payload.tag || "proline-notification",
     renotify: true,
     requireInteraction: false,
