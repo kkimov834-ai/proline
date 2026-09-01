@@ -469,4 +469,97 @@
 - [x] PWA, VAPID push, notification sound, settings, themes və Excel preview/export axınlarını yoxla.
 - [x] Çatışmayan funksiyaları tamamla və bütün testləri yenilə.
 - [x] Production build və responsive preview yoxlamalarını tamamla.
-- [ ] Live checkpoint yarat və aktual faylları GitHub proline repozitoriyasına push et.
+- [x] Live checkpoint yarat və aktual faylları GitHub proline repozitoriyasına push et.
+
+## Orders-to-production drag/drop regression
+
+- [x] Sifarişlər kartının desktop native dragStart/dragEnd və dataTransfer davranışını yoxla.
+- [x] İstehsalat sütununda dragOver/drop event-lərinin kartı qəbul etdiyini və requestMove çağırdığını yoxla.
+- [x] Mobil grip touch-end drop target və horizontal auto-scroll ilə Sifarişlər → İstehsalat keçidini yoxla.
+- [x] Pending approval notification-un digər cihazdakı İstehsalat hesabında görünməsini yoxla.
+- [x] Realistic browser smoke test, unit test, build və canlı checkpoint tamamla.
+
+## Simple responsive UX and status alerts
+
+- [x] Mobil kartın bütün səthindən başlayan, səhv klikdə modalı qoruyan asan touch drag davranışı qur.
+- [x] Mobil, tablet və desktop board/header/filter spacing-lərini sadələşdir və uyğunlaşdır.
+- [x] Toast alert-ləri yuxarı mərkəzə yerləşdir, uğuru yaşıl və xətanı qırmızı rənglə göstər.
+- [x] Xəta alert-ində başlıq, istifadəçiyə aydın mesaj və ayrıca HTTP/status kodu göstər.
+- [x] Uğursuz əməliyyatların bütün mutation catch axınlarını yeni alert formatter-dən keçirt.
+- [x] Responsive screenshot, unit test, TypeScript, production build və live checkpoint tamamla.
+
+## Video-reported mobile interaction fix
+
+- [x] Göndərilən videonu analiz edib faktiki mobil interaction problemini müəyyənləşdir.
+- [x] Video problemini kodda düzəlt və touch drag/drop axınını sadələşdir.
+- [x] Videodakı ssenarini mobil, tablet və desktop regression testləri ilə yoxla.
+- [x] Yeni fix-i build edib canlı checkpoint kimi yayımla.
+
+## Real mobile verification and compact alerts
+
+- [x] Chrome mobil touch emulyatorunda login edib kartı edge-ə apararaq real auto-scroll-u yoxla.
+- [x] Auto-scroll işləmirsə, mobil board touch-action və event lifecycle-ini yenidən düzəlt.
+- [x] Eyni əməliyyatda təkrarlanan alert-ləri deduplicate et və yalnız yekun mesajı saxla.
+- [x] Alert-ləri X düyməsiz, kiçik və 1000ms avtomatik bağlanan et.
+- [x] Mobil drag/drop, desktop/tablet regression, tests, build və canlı checkpoint tamamla.
+
+## Warehouse edge-scroll regression
+
+- [x] Göndərilən videoda Anbarın görünməməsi problemini son auto-scroll loop-u üzrə analiz et.
+- [x] Edge-də barmaq qaldığı müddətdə scroll-un hər kadrda davam etməsini və son scroll sərhədinə çatmasını təmin et.
+- [x] Anbar sütununda drop target və requestMove nəticəsini real mobil touch ssenarisində yoxla.
+- [x] Test, TypeScript, production build və canlı checkpoint tamamla.
+
+## Fifth-order desktop freeze regression
+
+- [x] 1-dən 5-ə qədər sifarişlərlə ardıcıl Sifarişlər → İstehsalat drag/drop ssenarisini icra et.
+- [x] 5-ci sifarişdə donmanın event, mutation, approval və ya refresh səbəbini tap.
+- [x] Cihazdan asılı olmayan desktop drag/drop state və error recovery düzəlişi et.
+- [x] Multi-device, mobile və desktop regression testləri, build və canlı checkpoint tamamla.
+
+## Unified date and time format
+
+- [x] Bütün UI tarixlərini `DD.MM.YYYY HH:mm` formatına keçir.
+- [x] Excel preview və export tarixlərini eyni real tarix/saat formatında göstər.
+- [x] Audit, modal, kart və tarix sahələri üçün ortaq formatlayıcı tətbiq et.
+- [x] Tarix formatı testlərini, TypeScript, production build və canlı checkpoint-i tamamla.
+
+## Secure login redesign
+
+- [x] Login input placeholder-lərini tam sil.
+- [x] Login sahələrinin etiket, fokus, spacing və təhlükəsizlik görünüşünü yenilə.
+- [x] Mobil, tablet və desktop login ekranını responsive saxla.
+- [x] Login preview, test, TypeScript, production build və canlı checkpoint tamamla.
+
+## Theme, settings tabs and sender identity
+
+- [x] Görünüş və İmport üçün Ayarlar daxilində yuxarı tab quruluşu yarat.
+- [x] Dark/Light rejimlərini və göndərilən qeyri-neon rəng palitralarını əlavə et.
+- [x] Ümumi app görünüşünü seçilmiş tema ilə uyğunlaşdır, mətn kontrastını qoru.
+- [x] Excel import/preview-ni İmport tabına ayır və preview-ni standart Excel rənglərində saxla.
+- [x] Login sonrası istifadəçi adını göstər və approval bildirişində göndərən adı/rolunu göstər.
+- [x] Responsive test, unit test, TypeScript, production build və canlı checkpoint tamamla.
+
+## Sequential alert queue
+
+- [x] Çoxsaylı alert-ləri tək queue-da sırala və üst-üstə düşməsinin qarşısını al.
+- [x] Hər alert-i 2 saniyə göstər, sonra növbəti alert-i avtomatik göstər.
+- [x] Success və error alert-lərinin queue daxilində rəng və məzmununu qoru.
+- [x] Alert queue üçün unit test, TypeScript, production build və canlı checkpoint tamamla.
+
+## User-entered login name
+
+- [x] Sabit “Əli” nümunəsi və test-only ad istifadəsini production login axınından çıxar.
+- [x] İstifadəçinin yazdığı adı trim edib login/session/header və approval sender məlumatında saxla.
+- [x] Fərqli adlarla login və session bərpası testləri əlavə et.
+- [x] TypeScript, Vitest, production build və canlı checkpoint-i tamamla.
+
+## Return-to-orders approval routing
+
+- [x] İstehsalat → Sifarişlər keçidində target role-u `admin` olaraq düzəlt.
+- [x] Pending approval-un Sifariş hesabında göründüyünü və başqa şöbəyə getmədiyini yoxla.
+- [x] Sifariş yaratma formasında “Sifariş adı” etiketini “Sifarişçinin adı” et.
+- [x] İki istiqamətli workflow, notification, test, build və canlı checkpoint tamamla.
+- [x] Fix admin approval affordance for returns to Sifarişlər and rename OrderForm label to “Sifarişçinin adı”
+- [x] Add regression coverage for forward and backward approval routing
+- [x] Verify tests, typecheck, production build, checkpoint, and GitHub delivery

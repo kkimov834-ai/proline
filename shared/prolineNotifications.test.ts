@@ -1,11 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { isPendingNoticeForUser } from "./prolineNotifications";
+import { canRespondToPendingNotice, isPendingNoticeForUser, prolineApprovalTargetRole } from "./prolineNotifications";
 
 const notice = (to: "orders" | "production" | "polishing" | "paint" | "warehouse", requester = "22", status = "pending") => ({ to, requester, status });
 
 describe("PROLINE notification visibility", () => {
   it("shows a return-to-orders request to the admin user", () => {
     expect(isPendingNoticeForUser(notice("orders", "22"), "admin", 7)).toBe(true);
+  });
+
+  it("routes forward transitions to the destination department role", () => {
+    expect(prolineApprovalTargetRole("production")).toBe("production");
+    expect(canRespondToPendingNotice("production", "production")).toBe(true);
+    expect(canRespondToPendingNotice("production", "admin")).toBe(false);
+  });
+
+  it("routes returns to orders to the admin role", () => {
+    expect(prolineApprovalTargetRole("orders")).toBe("admin");
+    expect(canRespondToPendingNotice("orders", "admin")).toBe(true);
+    expect(canRespondToPendingNotice("orders", "production")).toBe(false);
   });
 
   it("keeps department requests scoped to their target role", () => {

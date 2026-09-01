@@ -5,5 +5,5 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Home from "./pages/Home";
 
 export default function App() {
-  return <ErrorBoundary><TooltipProvider><Toaster theme="dark" /><Home /></TooltipProvider></ErrorBoundary>;
+  return <ErrorBoundary><TooltipProvider><Toaster theme="dark" position="top-center" closeButton richColors toastOptions={{ classNames: { success: "!bg-emerald-600 !text-white !border-emerald-400", error: "!bg-red-600 !text-white !border-red-400", info: "!bg-sky-600 !text-white !border-sky-400", description: "!text-white/85 !whitespace-pre-line" } }} /><Home /></TooltipProvider></ErrorBoundary>;
 }
