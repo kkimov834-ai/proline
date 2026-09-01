@@ -34,6 +34,7 @@ import {
   Pencil,
   Plus,
   Search,
+  RefreshCw,
   Settings,
   ShieldCheck,
   SlidersHorizontal,
@@ -130,6 +131,8 @@ export default function Home() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pushSettingsOpen, setPushSettingsOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
   const [sessionProbeEnabled, setSessionProbeEnabled] = useState(true);
   const [themeId, setThemeId] = useState<ThemeId>(() => (window.localStorage.getItem("proline-theme") as ThemeId) || "copper");
   const [columnLayouts, setColumnLayouts] = useState<Record<string, string[]>>(() => { try { return JSON.parse(window.localStorage.getItem("proline-excel-columns") || "{}"); } catch { return {}; } });
@@ -145,7 +148,7 @@ export default function Home() {
   const deleteMutation = trpc.board.delete.useMutation();
   const requestMoveMutation = trpc.board.requestMove.useMutation();
   const respondMutation = trpc.board.respond.useMutation();
-  const boardQuery = trpc.board.list.useQuery(undefined, { enabled: sessionReady, refetchInterval: 3000 });
+  const boardQuery = trpc.board.list.useQuery(undefined, { enabled: sessionReady, refetchInterval: 3000, refetchOnWindowFocus: true });
   const soundQuery = trpc.board.notificationPreference.useQuery(undefined, { enabled: sessionReady });
   const soundMutation = trpc.board.setNotificationPreference.useMutation();
   const auditFeedQuery = trpc.board.audit.useQuery(undefined, { enabled: sessionReady, refetchInterval: 5000 });
@@ -153,6 +156,25 @@ export default function Home() {
   const exportQuery = trpc.board.export.useQuery(undefined, { enabled: false });
   const commentsQuery = trpc.board.comments.useQuery(selected ? { orderId: Number(selected.id) } : { orderId: 0 }, { enabled: sessionReady && !!selected, refetchInterval: selected ? 5000 : false });
   const addCommentMutation = trpc.board.addComment.useMutation();
+
+  async function synchronize() {
+    if (!sessionReady || isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        boardQuery.refetch(),
+        auditFeedQuery.refetch(),
+        selected ? orderAuditQuery.refetch() : Promise.resolve(),
+        selected ? commentsQuery.refetch() : Promise.resolve(),
+      ]);
+      setLastSyncedAt(new Date());
+      toast.success("Məlumatlar sinxronlaşdırıldı");
+    } catch {
+      toast.error("Sinxronizasiya alınmadı. Server bağlantısını yoxlayın.");
+    } finally {
+      setIsRefreshing(false);
+    }
+  }
 
   useEffect(() => { if (soundQuery.data !== undefined) setSoundEnabled(soundQuery.data); }, [soundQuery.data]);
   useEffect(() => { window.localStorage.setItem("proline-excel-template", excelTemplate); }, [excelTemplate]);
@@ -362,6 +384,12 @@ export default function Home() {
       <div className="hidden md:flex items-center gap-5 text-xs text-[#8292A0]"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7FA98B] shadow-[0_0_10px_#7FA98B]" /> Sistem aktivdir</span><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7FA98B]" /> {user.label} onlayn</span><span className="h-5 w-px bg-white/10" /><span>{todayLabel()}</span></div>
       <div className="flex items-center gap-2"><button onClick={() => setSettingsOpen(true)} className="inline-flex items-center justify-center rounded-lg border border-white/10 p-2.5 text-[#B8C4CB] hover:bg-white/5 transition" title="Settings"><Settings size={17} /></button><button onClick={() => setPushSettingsOpen(true)} className="inline-flex items-center justify-center rounded-lg border border-white/10 p-2.5 text-[#B8C4CB] hover:bg-white/5 transition" title="Bağlı cihaz bildirişləri"><Bell size={17} /></button><button onClick={() => toggleSound} className={`inline-flex items-center justify-center rounded-lg border p-2.5 transition ${soundEnabled ? "border-[#7FA98B]/30 bg-[#7FA98B]/10 text-[#A8D2B0]" : "border-white/10 bg-white/[.03] text-[#8292A0]"}`} title={`Bildiriş səsi: ${soundEnabled ? "Aktiv" : "Deaktiv"}`}>{soundEnabled ? <Volume2 size={17} /> : <VolumeX size={17} />}</button><div className="hidden sm:flex items-center gap-2 rounded-full border border-white/10 bg-white/[.035] pl-2 pr-3 py-1.5"><div className="h-7 w-7 rounded-full bg-[#D78A4A] proline-theme-button text-[#1C1712] flex items-center justify-center text-xs font-bold">{user.email[0].toUpperCase()}</div><div className="leading-tight"><div className="text-xs font-semibold text-[#DDE5EA]">{user.label}</div><div className="text-[10px] text-[#8292A0]">{user.email}</div></div></div><button onClick={logout} className="p-2 rounded-lg text-[#8292A0] hover:bg-white/10 hover:text-white transition" title="Çıxış"><LogOut size={17} /></button></div>
     </header>
+    <div className="flex justify-end border-b border-white/[.06] bg-[#0B1823]/70 px-3 py-2 sm:px-5 lg:px-9">
+      <button type="button" onClick={synchronize} disabled={!sessionReady || isRefreshing} className="inline-flex items-center gap-2 rounded-lg border border-[#D78A4A]/35 bg-[#D78A4A]/10 px-3 py-2 text-xs font-semibold text-[#DDB083] hover:bg-[#D78A4A]/20 disabled:cursor-wait disabled:opacity-60" title={lastSyncedAt ? `Son sinxronizasiya: ${formatDate(lastSyncedAt.toISOString())}` : "Son məlumatları gətir"} aria-label="Son məlumatları gətir">
+        <RefreshCw size={15} className={isRefreshing ? "animate-spin" : ""} />
+        {isRefreshing ? "Yenilənir..." : "Sinxronlaşdır"}
+      </button>
+    </div>
     <main className="proline-main px-3 sm:px-5 lg:px-9 py-5 sm:py-8 max-w-[1600px] mx-auto"><div className="mb-4 flex justify-end"><div className="w-full sm:w-auto"><button type="button" aria-expanded={onlineOpen} onClick={() => setOnlineOpen((open) => !open)} className="flex w-full items-center justify-between gap-3 rounded-lg border border-white/[.1] bg-[#0C1925]/90 px-3 py-2.5 text-left text-xs text-[#DDE5EA] sm:hidden"><span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#7FA98B] shadow-[0_0_8px_#7FA98B]" />Online işçilər <span className="text-[#AAB9C4]">({staff.filter((worker) => worker.online || worker.email === user.email).length})</span></span><ChevronDown size={15} className={`transition-transform ${onlineOpen ? "rotate-180" : ""}`} /></button><div className={`${onlineOpen ? "block" : "hidden"} mt-2 sm:hidden`}><StaffStatus current={user} staff={staff} /></div><div className="hidden sm:block"><StaffStatus current={user} staff={staff} /></div></div></div><NoticeTray notices={pendingForUser} orders={orders} user={user} onAccept={(n) => respondNotice(n, true)} onReject={(n) => { setRejecting(n); setRejectReason(""); }} />
       <section className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 mb-8"><div><div className="flex items-center gap-2 text-[#D78A4A] proline-theme-accent text-[11px] font-bold tracking-[.2em] uppercase mb-3"><span className="h-px w-7 bg-[#D78A4A] proline-theme-button" /> Əməliyyat mərkəzi</div><h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-.045em] text-white">Axını nəzarətdə saxla.</h1><p className="text-[#8D9DAA] mt-3 max-w-xl text-sm leading-6">Sifarişləri mərhələlər arasında dəqiq hərəkət etdir, komandanın növbəti addımını bir baxışda gör.</p></div><div className="flex items-center gap-3">{user.role === "admin" && <button onClick={openCreate} className="inline-flex items-center gap-2 bg-[#D78A4A] proline-theme-button hover:bg-[#E49A5A] text-[#1B1713] rounded-lg px-4 py-2.5 text-sm font-bold transition active:scale-[.97] shadow-[0_8px_24px_rgba(215,138,74,.18)]"><Plus size={17} /> Sifariş yarat</button>}</div></section>
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8"><Metric label="Aktiv sifarişlər" value={total} detail="bütün xətt üzrə" icon={ClipboardList} /><Metric label="Tamamlanan" value={completed} detail={`${total ? Math.round((completed / total) * 100) : 0}% anbar mərhələsi`} icon={PackageCheck} accent="#7FA98B" /><Metric label="Təcili işlər" value={orders.filter((o) => o.priority === "urgent").length} detail="prioritet nəzarəti" icon={Zap} accent="#D77464" /><Metric label="Bu gün" value={orders.filter((o) => new Date(o.createdAt).toDateString() === new Date().toDateString()).length} detail="yeni daxil olanlar" icon={CalendarDays} accent="#91A5B7" /></section>
