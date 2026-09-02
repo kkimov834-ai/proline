@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { SignJWT, jwtVerify } from "jose";
 import { prolineNotifications, prolineOrders, users } from "../drizzle/schema";
-import { addAuditLog, addComment, deleteOrder, deletePushSubscription, exportOrders, getAuditLogs, getComments, getDb, getNotificationPreference, getOrCreateProlineUser, listBoardData, insertOrder, savePushSubscription, setNotificationPreference } from "./db";
+import { addAuditLog, addComment, deleteOrder, deletePushSubscription, exportOrders, getAuditLogs, getComments, getDb, getNotificationPreference, getOrCreateProlineUser, getWorkspaceSettings, listBoardData, insertOrder, savePushSubscription, saveWorkspaceSettings, setNotificationPreference } from "./db";
 import { storagePut } from "./storage";
 import { COOKIE_NAME } from "@shared/const";
 import { canProlineRoleMove, PROLINE_ACCESS_CODE, PROLINE_ROLE_MAP } from "@shared/prolineAuth";
@@ -36,6 +36,17 @@ export const appRouter = router({
     notificationPreference: publicProcedure.query(async ({ ctx }) => getNotificationPreference(await sessionEmail(ctx.req))),
     setNotificationPreference: publicProcedure.input(z.object({ enabled: z.boolean() })).mutation(async ({ input, ctx }) => setNotificationPreference(await sessionEmail(ctx.req), input.enabled)),
     audit: publicProcedure.input(z.object({ orderId: z.number().optional() }).optional()).query(async ({ input, ctx }) => { await sessionEmail(ctx.req); return getAuditLogs(input?.orderId); }),
+    workspace: publicProcedure.query(async ({ ctx }) => { await sessionEmail(ctx.req); return getWorkspaceSettings(); }),
+    saveWorkspace: publicProcedure.input(z.object({ config: z.string().min(2).max(50000) })).mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database unavailable");
+      const email = await sessionEmail(ctx.req);
+      const operator = (await db.select().from(users).where(eq(users.email, email)).limit(1))[0];
+      if (!operator || operator.prolineRole !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Studyo mod yalnız Admin üçün açıqdır." });
+      // Only JSON configurations are accepted; the client owns the presentation schema.
+      try { JSON.parse(input.config); } catch { throw new TRPCError({ code: "BAD_REQUEST", message: "Studyo konfiqurasiyası düzgün deyil." }); }
+      return saveWorkspaceSettings(input.config, operator.id);
+    }),
     comments: publicProcedure.input(z.object({ orderId: z.number() })).query(async ({ input, ctx }) => { await sessionEmail(ctx.req); return getComments(input.orderId); }),
     addComment: publicProcedure.input(z.object({ orderId: z.number(), body: z.string().trim().min(1).max(2000) })).mutation(async ({ input, ctx }) => { const db = await getDb(); if (!db) throw new Error("Database unavailable"); const email = await sessionEmail(ctx.req); const operatorRows = await db.select().from(users).where(eq(users.email, email)).limit(1); const operator = operatorRows[0]; if (!operator) throw new Error("Operator tapılmadı"); const order = await db.select({ id: prolineOrders.id }).from(prolineOrders).where(eq(prolineOrders.id, input.orderId)).limit(1); if (!order[0]) throw new Error("Sifariş tapılmadı"); const comment = await addComment({ orderId: input.orderId, authorUserId: operator.id, body: input.body }); await addAuditLog({ orderId: input.orderId, actorUserId: operator.id, action: "commented", details: "Sifarişə şərh əlavə edildi" }); return { ...comment, authorName: operator.name || operator.email || "İşçi" }; }),
     export: publicProcedure.query(async ({ ctx }) => { const email = await sessionEmail(ctx.req); const operatorRows = await getDb().then((db) => db ? db.select({ prolineRole: users.prolineRole }).from(users).where(eq(users.email, email)).limit(1) : []); if (operatorRows[0]?.prolineRole !== "admin") throw new Error("Excel funksiyaları yalnız Admin üçün açıqdır."); return exportOrders(); }),

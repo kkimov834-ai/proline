@@ -88,3 +88,13 @@ export const prolinePushSubscriptions = mysqlTable("prolinePushSubscriptions", {
 
 export type ProlinePushSubscription = typeof prolinePushSubscriptions.$inferSelect;
 export type InsertProlinePushSubscription = typeof prolinePushSubscriptions.$inferInsert;
+
+/** A single, admin-managed presentation configuration for the PROLINE board. */
+export const prolineWorkspaceSettings = mysqlTable("prolineWorkspaceSettings", {
+  id: int("id").autoincrement().primaryKey(),
+  config: text("config").notNull(),
+  updatedByUserId: int("updatedByUserId").notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ProlineWorkspaceSettings = typeof prolineWorkspaceSettings.$inferSelect;

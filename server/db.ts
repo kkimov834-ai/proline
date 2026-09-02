@@ -7,6 +7,7 @@ import {
   prolineNotifications,
   prolineOrders,
   prolinePushSubscriptions,
+  prolineWorkspaceSettings,
   users,
   type InsertProlineOrder,
   type InsertUser,
@@ -175,6 +176,25 @@ export async function deletePushSubscription(endpoint: string) {
   const db = await getDb();
   if (!db) return { success: true };
   await db.delete(prolinePushSubscriptions).where(eq(prolinePushSubscriptions.endpoint, endpoint));
+  return { success: true };
+}
+
+export async function getWorkspaceSettings() {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(prolineWorkspaceSettings).orderBy(desc(prolineWorkspaceSettings.updatedAt)).limit(1);
+  return rows[0]?.config || null;
+}
+
+export async function saveWorkspaceSettings(config: string, updatedByUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const current = await db.select({ id: prolineWorkspaceSettings.id }).from(prolineWorkspaceSettings).limit(1);
+  if (current[0]) {
+    await db.update(prolineWorkspaceSettings).set({ config, updatedByUserId }).where(eq(prolineWorkspaceSettings.id, current[0].id));
+  } else {
+    await db.insert(prolineWorkspaceSettings).values({ config, updatedByUserId });
+  }
   return { success: true };
 }
 
