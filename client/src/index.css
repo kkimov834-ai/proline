@@ -87,6 +87,18 @@ button { cursor: pointer; }
 .proline-app[data-appearance="light"] .proline-theme-button { background-color: #202020 !important; color: #fff !important; border-color: #202020 !important; }
 .proline-app[data-appearance="light"] .proline-theme-button * { color: #fff !important; }
 
+/* Light mode must also change the page canvas and the components which use
+   bespoke translucency utilities, otherwise dark bands remain around cards. */
+html:has(.proline-app[data-appearance="light"]), body:has(.proline-app[data-appearance="light"]) { background: #f4f4f2 !important; color: #202020; }
+.proline-app[data-appearance="light"] .proline-audit,
+.proline-app[data-appearance="light"] [class*="bg-white/"] { background-color: rgba(20, 24, 30, .045) !important; }
+.proline-app[data-appearance="light"] [class*="text-[#"] { color: #26323b !important; }
+.proline-app[data-appearance="light"] [class*="placeholder:text-"]::placeholder { color: #64717d !important; }
+.proline-app[data-appearance="light"] .proline-board article:hover { background: #fff !important; border-color: rgba(0,0,0,.25) !important; }
+.proline-app[data-appearance="light"] .proline-board [style*="color"] { color: #26323b !important; }
+.proline-app[data-appearance="light"] .proline-theme-button,
+.proline-app[data-appearance="light"] [class*="bg-[#D78A4A]"] { background-color: #202020 !important; color: #fff !important; border-color: #202020 !important; }
+
 /* The export preview represents a spreadsheet, not the application theme. */
 .proline-app .proline-excel-preview {
   background: #fff !important;
@@ -116,3 +128,15 @@ button { cursor: pointer; }
 .proline-app .proline-excel-preview td:first-child,
 .proline-app .proline-excel-preview .text-\[\#173247\] { color: #173247 !important; }
 .proline-app .proline-excel-preview > div:last-child { background: #fff !important; color: #52616d !important; border-color: #d9e2e8 !important; }
+.proline-light { background-color: #f4f4f2 !important; color: #111 !important; }
+.proline-light header { background-color: rgba(255,255,255,0.9) !important; border-bottom-color: rgba(0,0,0,0.1) !important; color: #111 !important; }
+.proline-light .proline-board > div { background-color: #ffffff !important; border-color: rgba(0,0,0,0.1) !important; color: #111 !important; }
+.proline-light .proline-board > div > div:first-child { border-bottom-color: rgba(0,0,0,0.1) !important; }
+.proline-light article { background-color: #f9f9f9 !important; border-color: rgba(0,0,0,0.1) !important; color: #111 !important; }
+.proline-light article:hover { background-color: #fff !important; }
+.proline-light input, .proline-light select { background-color: #fff !important; border-color: rgba(0,0,0,0.2) !important; color: #111 !important; }
+.proline-light button:not(.proline-theme-button) { color: #333 !important; }
+.proline-light [class*="text-[#"] { color: #555 !important; }
+.proline-light [class*="border-white/"] { border-color: rgba(0,0,0,0.1) !important; }
+.proline-light [class*="bg-[#07121B]"], .proline-light [class*="bg-[#061018]"] { background-color: #fff !important; }
+.proline-light [class*="bg-[#0C1925]"] { background-color: #f4f4f2 !important; }
