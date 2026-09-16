@@ -369,6 +369,8 @@ export default function Home() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
+  const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
+  const columnTouchRef = useRef<{ id: string | null; active: boolean }>({ id: null, active: false });
   const [workspace, setWorkspace] = useState<WorkspaceConfig>(
     defaultWorkspaceConfig
   );
@@ -441,6 +443,37 @@ export default function Home() {
     enabled: sessionReady,
   });
   const saveWorkspaceMutation = trpc.board.saveWorkspace.useMutation();
+
+  async function saveColumns(nextColumns: StudioColumn[]) {
+    const next = { ...workspace, columns: nextColumns };
+    setWorkspace(next);
+    try {
+      await saveWorkspaceMutation.mutateAsync({ config: JSON.stringify(next) });
+    } catch (error) {
+      setWorkspace(workspace);
+      showOperationError(error, "Sütun dəyişiklikləri yadda saxlanmadı.");
+    }
+  }
+
+  function reorderColumns(activeId: string, targetId: string) {
+    if (activeId === targetId) return;
+    const from = workspace.columns.findIndex(column => column.id === activeId);
+    const to = workspace.columns.findIndex(column => column.id === targetId);
+    if (from < 0 || to < 0) return;
+    const next = [...workspace.columns];
+    const [column] = next.splice(from, 1);
+    next.splice(to, 0, column);
+    void saveColumns(next);
+  }
+
+  function deleteColumn(column: StudioColumn) {
+    if (columns.some(base => base.id === column.id)) {
+      toast.error("Əsas workflow sütunları silinə bilməz.");
+      return;
+    }
+    if (!window.confirm(`${column.label} sütunu və onun rolu silinsin?`)) return;
+    void saveColumns(workspace.columns.filter(item => item.id !== column.id));
+  }
 
   async function synchronize() {
     if (!sessionReady || isRefreshing) return;
@@ -1612,6 +1645,7 @@ export default function Home() {
             return (
               <div
                 key={column.id}
+                data-proline-workspace-column={column.id}
                 data-proline-column={source}
                 onDragOver={e => {
                   if (!source) return;
@@ -1639,8 +1673,54 @@ export default function Home() {
                 className={`min-w-[280px] w-[min(100%,360px)] flex-none snap-start rounded-xl border xl:min-w-[278px] xl:w-auto xl:flex-1 bg-[#0C1925]/90 overflow-hidden transition-all duration-200 ${source && dropTarget === source ? "border-[#D78A4A] proline-theme-border shadow-[0_0_0_3px_rgba(215,138,74,.13)] -translate-y-1" : "border-white/[.09]"}`}
               >
                 <div
+                  draggable={user.role === "admin"}
+                  onDragStart={event => {
+                    if (user.role !== "admin") return;
+                    event.stopPropagation();
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("application/x-proline-column", column.id);
+                    setDraggedColumnId(column.id);
+                  }}
+                  onDragOver={event => {
+                    if (user.role !== "admin" || !draggedColumnId) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={event => {
+                    const activeId = event.dataTransfer.getData("application/x-proline-column");
+                    if (user.role !== "admin" || !activeId) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    reorderColumns(activeId, column.id);
+                    setDraggedColumnId(null);
+                  }}
+                  onDragEnd={() => setDraggedColumnId(null)}
+                  onTouchStart={() => {
+                    if (user.role !== "admin") return;
+                    columnTouchRef.current = { id: column.id, active: false };
+                  }}
+                  onTouchMove={event => {
+                    if (user.role !== "admin" || columnTouchRef.current.id !== column.id) return;
+                    const touch = event.touches[0];
+                    const board = boardRef.current;
+                    if (!touch || !board) return;
+                    columnTouchRef.current.active = true;
+                    const bounds = board.getBoundingClientRect();
+                    if (touch.clientX > bounds.right - 56) board.scrollLeft += 14;
+                    if (touch.clientX < bounds.left + 56) board.scrollLeft -= 14;
+                  }}
+                  onTouchEnd={event => {
+                    const activeId = columnTouchRef.current.id;
+                    const touch = event.changedTouches[0];
+                    columnTouchRef.current = { id: null, active: false };
+                    if (user.role !== "admin" || !activeId || !touch) return;
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest<HTMLElement>("[data-proline-workspace-column]");
+                    const targetId = target?.dataset.prolineWorkspaceColumn;
+                    if (targetId) reorderColumns(activeId, targetId);
+                  }}
                   className="px-4 py-4 border-b border-white/[.08]"
-                  style={{ borderTop: `2px solid ${column.color}` }}
+                  style={{ borderTop: `2px solid ${column.color}`, touchAction: user.role === "admin" ? "none" : undefined }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
@@ -1659,9 +1739,11 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <span className="font-display text-xs font-bold text-[#A8B6C0] bg-white/[.06] rounded-md px-2 py-1">
-                      {list.length}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      {user.role === "admin" && <GripVertical size={16} className="cursor-grab text-[#718391] active:cursor-grabbing" aria-label="Sütunu sürüklə" />}
+                      <span className="font-display text-xs font-bold text-[#A8B6C0] bg-white/[.06] rounded-md px-2 py-1">{list.length}</span>
+                      {user.role === "admin" && !columns.some(base => base.id === column.id) && <button type="button" onClick={event => { event.stopPropagation(); deleteColumn(column); }} className="rounded-md p-1.5 text-[#E58A7C] transition hover:bg-[#D77464]/15" aria-label={`${column.label} sütununu sil`}><Trash2 size={14} /></button>}
+                    </div>
                   </div>
                 </div>
                 <div className="p-3 min-h-[260px] space-y-3">
@@ -4080,14 +4162,7 @@ function SettingsPanel({
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[.16em] font-bold proline-theme-accent">
               <Settings size={13} /> Sistem ayarları
             </div>
-            <div className="mt-2 flex items-center gap-2">
-              <h2 className="font-display text-xl sm:text-2xl font-bold">
-                PROLINE Settings
-              </h2>
-              <span className="rounded-full border border-white/15 bg-white/[.05] px-2 py-1 text-[10px] font-bold text-[#B7C3CB]">
-                v2.0.0
-              </span>
-            </div>
+            <h2 className="mt-2 font-display text-xl sm:text-2xl font-bold">PROLINE Settings</h2>
             <p className="text-xs leading-5 text-[#B7C3CB] mt-2 max-w-lg">
               Sadə, monoxrom görünüş və çıxış ayarlarını buradan idarə edin.
               {canExport ? " Excel çıxış ayarları da bu bölmədədir." : ""}

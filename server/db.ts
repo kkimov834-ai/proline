@@ -74,7 +74,7 @@ export async function getOrCreateProlineUser(
   return getUserByOpenId(openId);
 }
 
-export async function listBoardData(email: string) {
+export async function listBoardData(email: string, companyId = "default") {
   const db = await getDb();
   if (!db) return { orders: [], notifications: [], staff: [] };
   const operator = await db
@@ -109,14 +109,17 @@ export async function listBoardData(email: string) {
           .select()
           .from(prolineNotifications)
           .where(
-            or(
-              and(
+            and(
+              eq(prolineNotifications.companyId, companyId),
+              or(
+                and(
                 eq(prolineNotifications.requesterUserId, operator[0]?.id || -1),
                 eq(prolineNotifications.status, "pending")
-              ),
-              and(
+                ),
+                and(
                 eq(prolineNotifications.targetRole, "admin"),
                 eq(prolineNotifications.status, "pending")
+                )
               )
             )
           )
@@ -126,6 +129,7 @@ export async function listBoardData(email: string) {
           .from(prolineNotifications)
           .where(
             and(
+              eq(prolineNotifications.companyId, companyId),
               eq(prolineNotifications.targetRole, role),
               eq(prolineNotifications.status, "pending")
             )
@@ -134,6 +138,7 @@ export async function listBoardData(email: string) {
   const allOrders = await db
     .select()
     .from(prolineOrders)
+    .where(eq(prolineOrders.companyId, companyId))
     .orderBy(desc(prolineOrders.createdAt));
   const ownColumn = ownProlineColumn(
     role as "admin" | "production" | "polishing" | "paint" | "warehouse"

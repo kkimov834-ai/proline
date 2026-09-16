@@ -24,6 +24,7 @@ export const users = mysqlTable("users", {
 
 export const prolineOrders = mysqlTable("prolineOrders", {
   id: int("id").autoincrement().primaryKey(),
+  companyId: varchar("companyId", { length: 80 }).notNull().default("default"),
   publicId: varchar("publicId", { length: 32 }).notNull().unique(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -56,6 +57,7 @@ export const prolineOrders = mysqlTable("prolineOrders", {
 
 export const prolineNotifications = mysqlTable("prolineNotifications", {
   id: int("id").autoincrement().primaryKey(),
+  companyId: varchar("companyId", { length: 80 }).notNull().default("default"),
   orderId: int("orderId").notNull(),
   fromColumn: mysqlEnum("fromColumn", [
     "orders",
