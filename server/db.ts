@@ -49,31 +49,99 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
   return result[0];
 }
 
-export async function getOrCreateProlineUser(email: string, label: string, prolineRole: string) {
+export async function getOrCreateProlineUser(
+  email: string,
+  label: string,
+  prolineRole: string
+) {
   const openId = `proline:${email}`;
-  await upsertUser({ openId, name: label, email, loginMethod: "proline-code", role: prolineRole === "admin" ? "admin" : "user", prolineRole });
+  await upsertUser({
+    openId,
+    name: label,
+    email,
+    loginMethod: "proline-code",
+    role: prolineRole === "admin" ? "admin" : "user",
+    prolineRole,
+  });
   return getUserByOpenId(openId);
 }
 
 export async function listBoardData(email: string) {
   const db = await getDb();
   if (!db) return { orders: [], notifications: [], staff: [] };
-  const operator = await db.select().from(users).where(eq(users.email, email)).limit(1);
-  await db.update(users).set({ lastSignedIn: new Date() }).where(eq(users.email, email));
+  const operator = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
+  await db
+    .update(users)
+    .set({ lastSignedIn: new Date() })
+    .where(eq(users.email, email));
   const canonicalEmails = new Set(Object.keys(PROLINE_ROLE_MAP));
-  const staffRows = await db.select({ email: users.email, name: users.name, prolineRole: users.prolineRole, lastSignedIn: users.lastSignedIn }).from(users);
-  const staff = staffRows.filter((member) => member.email && canonicalEmails.has(member.email)).map((member) => ({ email: member.email || "", label: member.name || member.email || "Operator", online: Date.now() - new Date(member.lastSignedIn).getTime() < 45000 }));
+  const staffRows = await db
+    .select({
+      email: users.email,
+      name: users.name,
+      prolineRole: users.prolineRole,
+      lastSignedIn: users.lastSignedIn,
+    })
+    .from(users);
+  const staff = staffRows
+    .filter(member => member.email && canonicalEmails.has(member.email))
+    .map(member => ({
+      email: member.email || "",
+      label: member.name || member.email || "Operator",
+      online: Date.now() - new Date(member.lastSignedIn).getTime() < 45000,
+    }));
   const role = operator[0]?.prolineRole || "admin";
-  const notifications = role === "admin"
-    ? await db.select().from(prolineNotifications).where(or(and(eq(prolineNotifications.requesterUserId, operator[0]?.id || -1), eq(prolineNotifications.status, "pending")), and(eq(prolineNotifications.targetRole, "admin"), eq(prolineNotifications.status, "pending")))).orderBy(desc(prolineNotifications.createdAt))
-    : await db.select().from(prolineNotifications).where(and(eq(prolineNotifications.targetRole, role), eq(prolineNotifications.status, "pending"))).orderBy(desc(prolineNotifications.createdAt));
-  const allOrders = await db.select().from(prolineOrders).orderBy(desc(prolineOrders.createdAt));
-  const ownColumn = ownProlineColumn(role as "admin" | "production" | "polishing" | "paint" | "warehouse");
-  const orders = role === "admin" ? allOrders : allOrders.filter((order) => order.columnId === ownColumn);
+  const notifications =
+    role === "admin"
+      ? await db
+          .select()
+          .from(prolineNotifications)
+          .where(
+            or(
+              and(
+                eq(prolineNotifications.requesterUserId, operator[0]?.id || -1),
+                eq(prolineNotifications.status, "pending")
+              ),
+              and(
+                eq(prolineNotifications.targetRole, "admin"),
+                eq(prolineNotifications.status, "pending")
+              )
+            )
+          )
+          .orderBy(desc(prolineNotifications.createdAt))
+      : await db
+          .select()
+          .from(prolineNotifications)
+          .where(
+            and(
+              eq(prolineNotifications.targetRole, role),
+              eq(prolineNotifications.status, "pending")
+            )
+          )
+          .orderBy(desc(prolineNotifications.createdAt));
+  const allOrders = await db
+    .select()
+    .from(prolineOrders)
+    .orderBy(desc(prolineOrders.createdAt));
+  const ownColumn = ownProlineColumn(
+    role as "admin" | "production" | "polishing" | "paint" | "warehouse"
+  );
+  const orders =
+    role === "admin"
+      ? allOrders
+      : allOrders.filter(order => order.columnId === ownColumn);
   return { orders, notifications, staff };
 }
 
@@ -81,33 +149,67 @@ export async function insertOrder(order: InsertProlineOrder) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   await db.insert(prolineOrders).values(order);
-  const rows = await db.select().from(prolineOrders).where(eq(prolineOrders.publicId, order.publicId)).limit(1);
+  const rows = await db
+    .select()
+    .from(prolineOrders)
+    .where(eq(prolineOrders.publicId, order.publicId))
+    .limit(1);
   return rows[0];
 }
 
-export async function addAuditLog(input: { orderId?: number; actorUserId: number; action: string; fromColumn?: "orders" | "production" | "polishing" | "paint" | "warehouse"; toColumn?: "orders" | "production" | "polishing" | "paint" | "warehouse"; details?: string }) {
+export async function addAuditLog(input: {
+  orderId?: number;
+  actorUserId: number;
+  action: string;
+  fromColumn?: "orders" | "production" | "polishing" | "paint" | "warehouse";
+  toColumn?: "orders" | "production" | "polishing" | "paint" | "warehouse";
+  details?: string;
+}) {
   const db = await getDb();
   if (!db) return;
-  await db.insert(prolineAuditLogs).values({ orderId: input.orderId, actorUserId: input.actorUserId, action: input.action, fromColumn: input.fromColumn, toColumn: input.toColumn, details: input.details });
+  await db
+    .insert(prolineAuditLogs)
+    .values({
+      orderId: input.orderId,
+      actorUserId: input.actorUserId,
+      action: input.action,
+      fromColumn: input.fromColumn,
+      toColumn: input.toColumn,
+      details: input.details,
+    });
 }
 
 export async function getAuditLogs(orderId?: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(prolineAuditLogs).where(orderId ? eq(prolineAuditLogs.orderId, orderId) : undefined).orderBy(desc(prolineAuditLogs.createdAt));
+  return db
+    .select()
+    .from(prolineAuditLogs)
+    .where(orderId ? eq(prolineAuditLogs.orderId, orderId) : undefined)
+    .orderBy(desc(prolineAuditLogs.createdAt));
 }
 
 export async function getNotificationPreference(email: string) {
   const db = await getDb();
   if (!db) return true;
-  const rows = await db.select({ notificationSound: users.notificationSound }).from(users).where(eq(users.email, email)).limit(1);
+  const rows = await db
+    .select({ notificationSound: users.notificationSound })
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
   return rows[0]?.notificationSound ?? true;
 }
 
-export async function setNotificationPreference(email: string, enabled: boolean) {
+export async function setNotificationPreference(
+  email: string,
+  enabled: boolean
+) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db.update(users).set({ notificationSound: enabled }).where(eq(users.email, email));
+  await db
+    .update(users)
+    .set({ notificationSound: enabled })
+    .where(eq(users.email, email));
   return enabled;
 }
 
@@ -121,8 +223,12 @@ export async function deleteOrder(orderId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   await db.delete(prolineComments).where(eq(prolineComments.orderId, orderId));
-  await db.delete(prolineNotifications).where(eq(prolineNotifications.orderId, orderId));
-  await db.delete(prolineAuditLogs).where(eq(prolineAuditLogs.orderId, orderId));
+  await db
+    .delete(prolineNotifications)
+    .where(eq(prolineNotifications.orderId, orderId));
+  await db
+    .delete(prolineAuditLogs)
+    .where(eq(prolineAuditLogs.orderId, orderId));
   await db.delete(prolineOrders).where(eq(prolineOrders.id, orderId));
   return { success: true };
 }
@@ -130,18 +236,46 @@ export async function deleteOrder(orderId: number) {
 export async function getComments(orderId: number) {
   const db = await getDb();
   if (!db) return [];
-  const rows = await db.select().from(prolineComments).where(eq(prolineComments.orderId, orderId)).orderBy(desc(prolineComments.createdAt));
-  return Promise.all(rows.map(async (comment) => {
-    const author = await db.select({ name: users.name, email: users.email }).from(users).where(eq(users.id, comment.authorUserId)).limit(1);
-    return { ...comment, authorName: author[0]?.name || author[0]?.email || "İşçi" };
-  }));
+  const rows = await db
+    .select()
+    .from(prolineComments)
+    .where(eq(prolineComments.orderId, orderId))
+    .orderBy(desc(prolineComments.createdAt));
+  return Promise.all(
+    rows.map(async comment => {
+      const author = await db
+        .select({ name: users.name, email: users.email })
+        .from(users)
+        .where(eq(users.id, comment.authorUserId))
+        .limit(1);
+      return {
+        ...comment,
+        authorName: author[0]?.name || author[0]?.email || "İşçi",
+      };
+    })
+  );
 }
 
-export async function addComment(input: { orderId: number; authorUserId: number; body: string }) {
+export async function addComment(input: {
+  orderId: number;
+  authorUserId: number;
+  body: string;
+}) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   await db.insert(prolineComments).values(input);
-  const rows = await db.select().from(prolineComments).where(and(eq(prolineComments.orderId, input.orderId), eq(prolineComments.authorUserId, input.authorUserId), eq(prolineComments.body, input.body))).orderBy(desc(prolineComments.createdAt)).limit(1);
+  const rows = await db
+    .select()
+    .from(prolineComments)
+    .where(
+      and(
+        eq(prolineComments.orderId, input.orderId),
+        eq(prolineComments.authorUserId, input.authorUserId),
+        eq(prolineComments.body, input.body)
+      )
+    )
+    .orderBy(desc(prolineComments.createdAt))
+    .limit(1);
   return rows[0];
 }
 
@@ -151,49 +285,75 @@ export type PushSubscriptionInput = {
   userAgent?: string;
 };
 
-export async function savePushSubscription(userId: number, subscription: PushSubscriptionInput) {
+export async function savePushSubscription(
+  userId: number,
+  subscription: PushSubscriptionInput
+) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db.insert(prolinePushSubscriptions).values({
-    userId,
-    endpoint: subscription.endpoint,
-    p256dh: subscription.keys.p256dh,
-    auth: subscription.keys.auth,
-    userAgent: subscription.userAgent || null,
-  }).onDuplicateKeyUpdate({
-    set: {
+  await db
+    .insert(prolinePushSubscriptions)
+    .values({
       userId,
+      endpoint: subscription.endpoint,
       p256dh: subscription.keys.p256dh,
       auth: subscription.keys.auth,
       userAgent: subscription.userAgent || null,
-      updatedAt: new Date(),
-    },
-  });
+    })
+    .onDuplicateKeyUpdate({
+      set: {
+        userId,
+        p256dh: subscription.keys.p256dh,
+        auth: subscription.keys.auth,
+        userAgent: subscription.userAgent || null,
+        updatedAt: new Date(),
+      },
+    });
   return { success: true };
 }
 
 export async function deletePushSubscription(endpoint: string) {
   const db = await getDb();
   if (!db) return { success: true };
-  await db.delete(prolinePushSubscriptions).where(eq(prolinePushSubscriptions.endpoint, endpoint));
+  await db
+    .delete(prolinePushSubscriptions)
+    .where(eq(prolinePushSubscriptions.endpoint, endpoint));
   return { success: true };
 }
 
-export async function getWorkspaceSettings() {
+export async function getWorkspaceSettings(companyId = "default") {
   const db = await getDb();
   if (!db) return null;
-  const rows = await db.select().from(prolineWorkspaceSettings).orderBy(desc(prolineWorkspaceSettings.updatedAt)).limit(1);
+  const rows = await db
+    .select()
+    .from(prolineWorkspaceSettings)
+    .where(eq(prolineWorkspaceSettings.companyId, companyId))
+    .orderBy(desc(prolineWorkspaceSettings.updatedAt))
+    .limit(1);
   return rows[0]?.config || null;
 }
 
-export async function saveWorkspaceSettings(config: string, updatedByUserId: number) {
+export async function saveWorkspaceSettings(
+  config: string,
+  updatedByUserId: number,
+  companyId = "default"
+) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  const current = await db.select({ id: prolineWorkspaceSettings.id }).from(prolineWorkspaceSettings).limit(1);
+  const current = await db
+    .select({ id: prolineWorkspaceSettings.id })
+    .from(prolineWorkspaceSettings)
+    .where(eq(prolineWorkspaceSettings.companyId, companyId))
+    .limit(1);
   if (current[0]) {
-    await db.update(prolineWorkspaceSettings).set({ config, updatedByUserId }).where(eq(prolineWorkspaceSettings.id, current[0].id));
+    await db
+      .update(prolineWorkspaceSettings)
+      .set({ config, updatedByUserId })
+      .where(eq(prolineWorkspaceSettings.id, current[0].id));
   } else {
-    await db.insert(prolineWorkspaceSettings).values({ config, updatedByUserId });
+    await db
+      .insert(prolineWorkspaceSettings)
+      .values({ config, updatedByUserId, companyId });
   }
   return { success: true };
 }
@@ -201,7 +361,14 @@ export async function saveWorkspaceSettings(config: string, updatedByUserId: num
 export async function listPushSubscriptionsForRole(targetRole: string) {
   const db = await getDb();
   if (!db) return [];
-  return db.select({ id: prolinePushSubscriptions.id, userId: prolinePushSubscriptions.userId, endpoint: prolinePushSubscriptions.endpoint, p256dh: prolinePushSubscriptions.p256dh, auth: prolinePushSubscriptions.auth })
+  return db
+    .select({
+      id: prolinePushSubscriptions.id,
+      userId: prolinePushSubscriptions.userId,
+      endpoint: prolinePushSubscriptions.endpoint,
+      p256dh: prolinePushSubscriptions.p256dh,
+      auth: prolinePushSubscriptions.auth,
+    })
     .from(prolinePushSubscriptions)
     .innerJoin(users, eq(users.id, prolinePushSubscriptions.userId))
     .where(eq(users.prolineRole, targetRole));
@@ -210,5 +377,8 @@ export async function listPushSubscriptionsForRole(targetRole: string) {
 export async function listPushSubscriptionsForUser(userId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(prolinePushSubscriptions).where(eq(prolinePushSubscriptions.userId, userId));
+  return db
+    .select()
+    .from(prolinePushSubscriptions)
+    .where(eq(prolinePushSubscriptions.userId, userId));
 }

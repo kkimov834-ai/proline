@@ -1,4 +1,12 @@
-import { boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  boolean,
+  int,
+  mysqlEnum,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
@@ -20,9 +28,25 @@ export const prolineOrders = mysqlTable("prolineOrders", {
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   imageUrl: text("imageUrl"),
-  priority: mysqlEnum("priority", ["low", "normal", "high", "urgent"]).default("normal").notNull(),
-  columnId: mysqlEnum("columnId", ["orders", "production", "polishing", "paint", "warehouse"]).default("orders").notNull(),
-  pendingTo: mysqlEnum("pendingTo", ["orders", "production", "polishing", "paint", "warehouse"]),
+  priority: mysqlEnum("priority", ["low", "normal", "high", "urgent"])
+    .default("normal")
+    .notNull(),
+  columnId: mysqlEnum("columnId", [
+    "orders",
+    "production",
+    "polishing",
+    "paint",
+    "warehouse",
+  ])
+    .default("orders")
+    .notNull(),
+  pendingTo: mysqlEnum("pendingTo", [
+    "orders",
+    "production",
+    "polishing",
+    "paint",
+    "warehouse",
+  ]),
   rejectedReason: text("rejectedReason"),
   stageEnteredAt: timestamp("stageEnteredAt").defaultNow().notNull(),
   createdByUserId: int("createdByUserId").notNull(),
@@ -33,11 +57,25 @@ export const prolineOrders = mysqlTable("prolineOrders", {
 export const prolineNotifications = mysqlTable("prolineNotifications", {
   id: int("id").autoincrement().primaryKey(),
   orderId: int("orderId").notNull(),
-  fromColumn: mysqlEnum("fromColumn", ["orders", "production", "polishing", "paint", "warehouse"]).notNull(),
-  toColumn: mysqlEnum("toColumn", ["orders", "production", "polishing", "paint", "warehouse"]).notNull(),
+  fromColumn: mysqlEnum("fromColumn", [
+    "orders",
+    "production",
+    "polishing",
+    "paint",
+    "warehouse",
+  ]).notNull(),
+  toColumn: mysqlEnum("toColumn", [
+    "orders",
+    "production",
+    "polishing",
+    "paint",
+    "warehouse",
+  ]).notNull(),
   requesterUserId: int("requesterUserId").notNull(),
   targetRole: varchar("targetRole", { length: 32 }).notNull(),
-  status: mysqlEnum("status", ["pending", "accepted", "rejected"]).default("pending").notNull(),
+  status: mysqlEnum("status", ["pending", "accepted", "rejected"])
+    .default("pending")
+    .notNull(),
   reason: text("reason"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   respondedAt: timestamp("respondedAt"),
@@ -48,15 +86,28 @@ export type InsertUser = typeof users.$inferInsert;
 export type ProlineOrder = typeof prolineOrders.$inferSelect;
 export type InsertProlineOrder = typeof prolineOrders.$inferInsert;
 export type ProlineNotification = typeof prolineNotifications.$inferSelect;
-export type InsertProlineNotification = typeof prolineNotifications.$inferInsert;
+export type InsertProlineNotification =
+  typeof prolineNotifications.$inferInsert;
 
 export const prolineAuditLogs = mysqlTable("prolineAuditLogs", {
   id: int("id").autoincrement().primaryKey(),
   orderId: int("orderId"),
   actorUserId: int("actorUserId").notNull(),
   action: varchar("action", { length: 64 }).notNull(),
-  fromColumn: mysqlEnum("fromColumn", ["orders", "production", "polishing", "paint", "warehouse"]),
-  toColumn: mysqlEnum("toColumn", ["orders", "production", "polishing", "paint", "warehouse"]),
+  fromColumn: mysqlEnum("fromColumn", [
+    "orders",
+    "production",
+    "polishing",
+    "paint",
+    "warehouse",
+  ]),
+  toColumn: mysqlEnum("toColumn", [
+    "orders",
+    "production",
+    "polishing",
+    "paint",
+    "warehouse",
+  ]),
   details: text("details"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -86,15 +137,19 @@ export const prolinePushSubscriptions = mysqlTable("prolinePushSubscriptions", {
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-export type ProlinePushSubscription = typeof prolinePushSubscriptions.$inferSelect;
-export type InsertProlinePushSubscription = typeof prolinePushSubscriptions.$inferInsert;
+export type ProlinePushSubscription =
+  typeof prolinePushSubscriptions.$inferSelect;
+export type InsertProlinePushSubscription =
+  typeof prolinePushSubscriptions.$inferInsert;
 
 /** A single, admin-managed presentation configuration for the PROLINE board. */
 export const prolineWorkspaceSettings = mysqlTable("prolineWorkspaceSettings", {
   id: int("id").autoincrement().primaryKey(),
+  companyId: varchar("companyId", { length: 80 }).notNull().default("default"),
   config: text("config").notNull(),
   updatedByUserId: int("updatedByUserId").notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-export type ProlineWorkspaceSettings = typeof prolineWorkspaceSettings.$inferSelect;
+export type ProlineWorkspaceSettings =
+  typeof prolineWorkspaceSettings.$inferSelect;
