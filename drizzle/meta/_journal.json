@@ -36,6 +36,20 @@
       "when": 1788336000000,
       "tag": "0004_studio_workspace",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1788422400000,
+      "tag": "0005_company_workspace",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1790496000000,
+      "tag": "0006_dynamic_columns",
+      "breakpoints": true
     }
   ]
 }

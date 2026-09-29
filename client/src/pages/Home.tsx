@@ -6,7 +6,7 @@ import { trpc } from "@/lib/trpc";
 import {
   canProlineRoleMove,
   ownProlineColumn,
-  PROLINE_COLUMN_ORDER,
+  PROLINE_BASE_COLUMN_ORDER,
   PROLINE_ROLE_MAP,
   visibleProlineColumns,
 } from "@shared/prolineAuth";
@@ -72,8 +72,8 @@ import {
   Sun,
 } from "lucide-react";
 
-type Role = "admin" | "production" | "polishing" | "paint" | "warehouse";
-type ColumnId = "orders" | "production" | "polishing" | "paint" | "warehouse";
+type Role = string;
+type ColumnId = string;
 type Priority = "low" | "normal" | "high" | "urgent";
 type Order = {
   id: string;
@@ -296,8 +296,8 @@ function priorityMeta(priority: Priority) {
 function canEdit(user: User | null) {
   return user?.role === "admin";
 }
-function canMove(user: User | null, from: ColumnId, to: ColumnId) {
-  return !!user && canProlineRoleMove(user.role, from, to);
+function canMove(user: User | null, from: ColumnId, to: ColumnId, columnOrder?: string[]) {
+  return !!user && canProlineRoleMove(user.role, from, to, columnOrder);
 }
 
 export default function Home() {
@@ -369,6 +369,7 @@ export default function Home() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
   const [addColumnOpen, setAddColumnOpen] = useState(false);
+  const [editingColumn, setEditingColumn] = useState<StudioColumn | null>(null);
   const [draggedColumnId, setDraggedColumnId] = useState<string | null>(null);
   const columnTouchRef = useRef<{ id: string | null; active: boolean }>({ id: null, active: false });
   const [workspace, setWorkspace] = useState<WorkspaceConfig>(
@@ -443,6 +444,12 @@ export default function Home() {
     enabled: sessionReady,
   });
   const saveWorkspaceMutation = trpc.board.saveWorkspace.useMutation();
+  const companyColumnsQuery = trpc.companyColumns.list.useQuery(undefined, {
+    enabled: sessionReady,
+  });
+  const companyColumnCreateMutation = trpc.companyColumns.create.useMutation();
+  const companyColumnUpdateMutation = trpc.companyColumns.update.useMutation();
+  const companyColumnDeleteMutation = trpc.companyColumns.delete.useMutation();
 
   async function saveColumns(nextColumns: StudioColumn[]) {
     const next = { ...workspace, columns: nextColumns };
@@ -472,7 +479,16 @@ export default function Home() {
       return;
     }
     if (!window.confirm(`${column.label} sütunu və onun rolu silinsin?`)) return;
-    void saveColumns(workspace.columns.filter(item => item.id !== column.id));
+    void (async () => {
+      try {
+        await companyColumnDeleteMutation.mutateAsync({ columnId: column.id });
+        await saveColumns(workspace.columns.filter(item => item.id !== column.id));
+        void companyColumnsQuery.refetch();
+        toast.success(`${column.label} sütunu silindi.`);
+      } catch (error) {
+        showOperationError(error, "Sütun silinmədi.");
+      }
+    })();
   }
 
   async function synchronize() {
@@ -614,9 +630,20 @@ export default function Home() {
     setNotices(mappedNotices);
     setStaff(boardQuery.data.staff || []);
   }, [boardQuery.data]);
+  const dynamicColumnOrder = useMemo(
+    () => [
+      "orders",
+      ...(companyColumnsQuery.data || []).map(c => c.columnId),
+    ],
+    [companyColumnsQuery.data]
+  );
   const allowedColumns = useMemo(
-    () => visibleProlineColumns(user?.role || "admin") as ColumnId[],
-    [user?.role]
+    () =>
+      visibleProlineColumns(
+        user?.role || "admin",
+        dynamicColumnOrder
+      ) as ColumnId[],
+    [user?.role, dynamicColumnOrder]
   );
   const visibleWorkspaceColumns = useMemo(
     () =>
@@ -1216,7 +1243,7 @@ export default function Home() {
   }
   async function moveOrder(order: Order, to: ColumnId) {
     if (to === order.column) return false;
-    if (!canMove(user, order.column, to)) {
+    if (!canMove(user, order.column, to, dynamicColumnOrder)) {
       toast.error("Bu mərhələyə keçid üçün icazəniz yoxdur.");
       return false;
     }
@@ -1742,6 +1769,7 @@ export default function Home() {
                     <div className="flex items-center gap-1.5">
                       {user.role === "admin" && <GripVertical size={16} className="cursor-grab text-[#718391] active:cursor-grabbing" aria-label="Sütunu sürüklə" />}
                       <span className="font-display text-xs font-bold text-[#A8B6C0] bg-white/[.06] rounded-md px-2 py-1">{list.length}</span>
+                      {user.role === "admin" && <button type="button" onClick={event => { event.stopPropagation(); setEditingColumn(column); }} className="rounded-md p-1.5 text-[#A8B6C0] transition hover:bg-white/10" aria-label={`${column.label} sütununu redaktə et`}><Pencil size={14} /></button>}
                       {user.role === "admin" && !columns.some(base => base.id === column.id) && <button type="button" onClick={event => { event.stopPropagation(); deleteColumn(column); }} className="rounded-md p-1.5 text-[#E58A7C] transition hover:bg-[#D77464]/15" aria-label={`${column.label} sütununu sil`}><Trash2 size={14} /></button>}
                     </div>
                   </div>
@@ -1751,8 +1779,8 @@ export default function Home() {
                     <OrderCard
                       key={order.id}
                       order={order}
-                      canDrag={columns.some(target =>
-                        canMove(user, order.column, target.id)
+                      canDrag={dynamicColumnOrder.some(target =>
+                        canMove(user, order.column, target, dynamicColumnOrder)
                       )}
                       onClick={() => {
                         if (suppressNextCardClickRef.current) {
@@ -1879,29 +1907,73 @@ export default function Home() {
               toast.error("Bu sütun artıq mövcuddur.");
               return;
             }
-            const next = {
-              ...workspace,
-              columns: [
-                ...workspace.columns,
-                {
-                  id: roleId,
-                  roleId,
-                  label,
-                  detail: `${label} rolu`,
-                  color: "#D78A4A",
-                  visible: true,
-                },
-              ],
-            };
             try {
+              await companyColumnCreateMutation.mutateAsync({
+                label,
+                roleLabel: label,
+                color: "#D78A4A",
+              });
+              const next = {
+                ...workspace,
+                columns: [
+                  ...workspace.columns,
+                  {
+                    id: roleId,
+                    sourceId: roleId,
+                    roleId,
+                    label,
+                    detail: `${label} rolu`,
+                    color: "#D78A4A",
+                    visible: true,
+                  },
+                ],
+              };
               await saveWorkspaceMutation.mutateAsync({
                 config: JSON.stringify(next),
               });
               setWorkspace(next);
               setAddColumnOpen(false);
+              void companyColumnsQuery.refetch();
               toast.success(`${label} sütunu və ${label} rolu yaradıldı.`);
             } catch (error) {
               showOperationError(error, "Sütun yadda saxlanmadı.");
+            }
+          }}
+        />
+      )}
+      {editingColumn && (
+        <EditColumnModal
+          column={editingColumn}
+          isBase={columns.some(base => base.id === editingColumn.id)}
+          onClose={() => setEditingColumn(null)}
+          onSubmit={async (label, detail, color) => {
+            try {
+              if (!columns.some(base => base.id === editingColumn.id)) {
+                await companyColumnUpdateMutation.mutateAsync({
+                  columnId: editingColumn.id,
+                  label,
+                  detail,
+                  color,
+                  roleLabel: label,
+                });
+                void companyColumnsQuery.refetch();
+              }
+              const next = {
+                ...workspace,
+                columns: workspace.columns.map(col =>
+                  col.id === editingColumn.id
+                    ? { ...col, label, detail: detail || col.detail, color }
+                    : col
+                ),
+              };
+              await saveWorkspaceMutation.mutateAsync({
+                config: JSON.stringify(next),
+              });
+              setWorkspace(next);
+              setEditingColumn(null);
+              toast.success("Sütun yeniləndi.");
+            } catch (error) {
+              showOperationError(error, "Sütun yenilənmədi.");
             }
           }}
         />
@@ -3235,6 +3307,111 @@ function AddColumnModal({
     </div>
   );
 }
+function EditColumnModal({
+  column,
+  isBase,
+  onClose,
+  onSubmit,
+}: {
+  column: StudioColumn;
+  isBase: boolean;
+  onClose: () => void;
+  onSubmit: (label: string, detail: string, color: string) => void | Promise<void>;
+}) {
+  const [label, setLabel] = useState(column.label);
+  const [detail, setDetail] = useState(column.detail);
+  const [color, setColor] = useState(column.color);
+  return (
+    <div
+      className="fixed inset-0 z-[90] flex items-end bg-[#02070B]/75 p-3 backdrop-blur-sm sm:items-center sm:justify-center sm:p-4"
+      onMouseDown={event => event.target === event.currentTarget && onClose()}
+    >
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          const value = label.trim();
+          if (value) void onSubmit(value, detail.trim(), color);
+        }}
+        className="w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-200 sm:zoom-in-95"
+      >
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0D1C29] shadow-2xl">
+          <div className="flex items-start justify-between gap-4 border-b border-white/[.08] px-4 py-4 sm:px-6">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-[.16em] text-[#D78A4A]">
+                Sütun redaktəsi
+              </div>
+              <h2 className="mt-2 font-display text-xl font-bold">
+                {column.label}
+              </h2>
+              <p className="mt-1 text-xs leading-5 text-[#AAB9C4]">
+                {isBase
+                  ? "Əsas sütunun adı və rəngi dəyişdirilə bilər."
+                  : "Sütun adı, təfərrüatı və rolu redaktə edin."}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-2 text-[#B7C3CB] hover:bg-white/10"
+              aria-label="Modalı bağla"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <div className="p-4 sm:p-6 space-y-4">
+            <label className="block text-xs font-semibold text-[#C5D0D6]">
+              Sütun adı
+              <input
+                autoFocus
+                value={label}
+                maxLength={50}
+                onChange={event => setLabel(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-white/10 bg-[#07121B] px-3.5 py-3 text-sm outline-none transition focus:border-[#D78A4A]"
+              />
+            </label>
+            <label className="block text-xs font-semibold text-[#C5D0D6]">
+              Təfərrüat
+              <input
+                value={detail}
+                maxLength={80}
+                onChange={event => setDetail(event.target.value)}
+                placeholder="Qısa açıqlama"
+                className="mt-2 w-full rounded-lg border border-white/10 bg-[#07121B] px-3.5 py-3 text-sm outline-none transition focus:border-[#D78A4A]"
+              />
+            </label>
+            <label className="block text-xs font-semibold text-[#C5D0D6]">
+              Rəng
+              <div className="mt-2 flex items-center gap-3">
+                <input
+                  type="color"
+                  value={color}
+                  onChange={event => setColor(event.target.value)}
+                  className="h-10 w-10 cursor-pointer rounded-lg border border-white/10 bg-transparent"
+                />
+                <span className="text-xs text-[#8596A2]">{color}</span>
+              </div>
+            </label>
+          </div>
+          <div className="flex flex-col-reverse gap-2 border-t border-white/[.08] px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg px-4 py-2.5 text-xs font-bold text-[#C5D0D6] hover:bg-white/5"
+            >
+              Ləğv et
+            </button>
+            <button
+              disabled={!label.trim()}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#D78A4A] px-4 py-2.5 text-xs font-bold text-[#1B1713] transition hover:bg-[#E49A5A] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Check size={15} /> Dəyişiklikləri saxla
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}
 function VisualStudioMode({
   initial,
   saving,
@@ -4167,6 +4344,9 @@ function SettingsPanel({
               Sadə, monoxrom görünüş və çıxış ayarlarını buradan idarə edin.
               {canExport ? " Excel çıxış ayarları da bu bölmədədir." : ""}
             </p>
+            <div className="mt-2 inline-block rounded-md bg-white/[.06] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#8596A2]">
+              v2.1.0
+            </div>
           </div>
           <button
             onClick={onClose}

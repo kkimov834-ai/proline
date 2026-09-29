@@ -32,22 +32,10 @@ export const prolineOrders = mysqlTable("prolineOrders", {
   priority: mysqlEnum("priority", ["low", "normal", "high", "urgent"])
     .default("normal")
     .notNull(),
-  columnId: mysqlEnum("columnId", [
-    "orders",
-    "production",
-    "polishing",
-    "paint",
-    "warehouse",
-  ])
+  columnId: varchar("columnId", { length: 80 })
     .default("orders")
     .notNull(),
-  pendingTo: mysqlEnum("pendingTo", [
-    "orders",
-    "production",
-    "polishing",
-    "paint",
-    "warehouse",
-  ]),
+  pendingTo: varchar("pendingTo", { length: 80 }),
   rejectedReason: text("rejectedReason"),
   stageEnteredAt: timestamp("stageEnteredAt").defaultNow().notNull(),
   createdByUserId: int("createdByUserId").notNull(),
@@ -59,20 +47,8 @@ export const prolineNotifications = mysqlTable("prolineNotifications", {
   id: int("id").autoincrement().primaryKey(),
   companyId: varchar("companyId", { length: 80 }).notNull().default("default"),
   orderId: int("orderId").notNull(),
-  fromColumn: mysqlEnum("fromColumn", [
-    "orders",
-    "production",
-    "polishing",
-    "paint",
-    "warehouse",
-  ]).notNull(),
-  toColumn: mysqlEnum("toColumn", [
-    "orders",
-    "production",
-    "polishing",
-    "paint",
-    "warehouse",
-  ]).notNull(),
+  fromColumn: varchar("fromColumn", { length: 80 }).notNull(),
+  toColumn: varchar("toColumn", { length: 80 }).notNull(),
   requesterUserId: int("requesterUserId").notNull(),
   targetRole: varchar("targetRole", { length: 32 }).notNull(),
   status: mysqlEnum("status", ["pending", "accepted", "rejected"])
@@ -96,20 +72,8 @@ export const prolineAuditLogs = mysqlTable("prolineAuditLogs", {
   orderId: int("orderId"),
   actorUserId: int("actorUserId").notNull(),
   action: varchar("action", { length: 64 }).notNull(),
-  fromColumn: mysqlEnum("fromColumn", [
-    "orders",
-    "production",
-    "polishing",
-    "paint",
-    "warehouse",
-  ]),
-  toColumn: mysqlEnum("toColumn", [
-    "orders",
-    "production",
-    "polishing",
-    "paint",
-    "warehouse",
-  ]),
+  fromColumn: varchar("fromColumn", { length: 80 }),
+  toColumn: varchar("toColumn", { length: 80 }),
   details: text("details"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -155,3 +119,20 @@ export const prolineWorkspaceSettings = mysqlTable("prolineWorkspaceSettings", {
 
 export type ProlineWorkspaceSettings =
   typeof prolineWorkspaceSettings.$inferSelect;
+
+export const prolineCompanyColumns = mysqlTable("prolineCompanyColumns", {
+  id: int("id").autoincrement().primaryKey(),
+  companyId: varchar("companyId", { length: 80 }).notNull(),
+  columnId: varchar("columnId", { length: 80 }).notNull(),
+  label: varchar("label", { length: 120 }).notNull(),
+  detail: varchar("detail", { length: 200 }),
+  color: varchar("color", { length: 20 }).default("#D78A4A").notNull(),
+  roleId: varchar("roleId", { length: 80 }).notNull(),
+  roleLabel: varchar("roleLabel", { length: 120 }).notNull(),
+  sortOrder: int("sortOrder").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ProlineCompanyColumn = typeof prolineCompanyColumns.$inferSelect;
+export type InsertProlineCompanyColumn = typeof prolineCompanyColumns.$inferInsert;

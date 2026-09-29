@@ -1,11 +1,13 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { SignJWT, jwtVerify } from "jose";
-import { prolineNotifications, prolineOrders, users } from "../drizzle/schema";
+import { prolineCompanyColumns, prolineNotifications, prolineOrders, users } from "../drizzle/schema";
 import {
   addAuditLog,
   addComment,
+  createCompanyColumn,
+  deleteCompanyColumn,
   deleteOrder,
   deletePushSubscription,
   exportOrders,
@@ -16,10 +18,12 @@ import {
   getOrCreateProlineUser,
   getWorkspaceSettings,
   listBoardData,
+  listCompanyColumns,
   insertOrder,
   savePushSubscription,
   saveWorkspaceSettings,
   setNotificationPreference,
+  updateCompanyColumn,
 } from "./db";
 import { storagePut } from "./storage";
 import { COOKIE_NAME } from "@shared/const";
@@ -27,6 +31,7 @@ import {
   canProlineRoleMove,
   PROLINE_ACCESS_CODE,
   PROLINE_ROLE_MAP,
+  slugify,
 } from "@shared/prolineAuth";
 import { prolineApprovalTargetRole } from "@shared/prolineNotifications";
 import { getSessionCookieOptions } from "./_core/cookies";
@@ -237,7 +242,10 @@ export const appRouter = router({
         };
       }),
     list: publicProcedure.query(async ({ ctx }) =>
-      listBoardData(await sessionEmail(ctx.req))
+      listBoardData(
+        await sessionEmail(ctx.req),
+        await sessionCompany(ctx.req)
+      )
     ),
     heartbeat: publicProcedure.mutation(async ({ ctx }) => {
       const db = await getDb();
@@ -469,13 +477,7 @@ export const appRouter = router({
       .input(
         z.object({
           orderId: z.number(),
-          toColumn: z.enum([
-            "orders",
-            "production",
-            "polishing",
-            "paint",
-            "warehouse",
-          ]),
+          toColumn: z.string().min(1),
         })
       )
       .mutation(async ({ input, ctx }) => {
@@ -502,16 +504,18 @@ export const appRouter = router({
           throw new Error("Sifariş artıq bu sütundadır.");
         if (order.pendingTo)
           throw new Error("Bu sifariş üçün artıq cavab gözlənilir.");
+        const companyId = await sessionCompany(ctx.req);
+        const companyColumns = await listCompanyColumns(companyId);
+        const columnOrder = [
+          "orders",
+          ...companyColumns.map(c => c.columnId),
+        ];
         if (
           !canProlineRoleMove(
-            current.prolineRole as
-              | "admin"
-              | "production"
-              | "polishing"
-              | "paint"
-              | "warehouse",
+            current.prolineRole || "",
             order.columnId,
-            input.toColumn
+            input.toColumn,
+            columnOrder
           )
         )
           throw new Error("Bu mərhələyə keçid üçün icazəniz yoxdur.");
@@ -633,6 +637,117 @@ export const appRouter = router({
           orderId: notice.orderId,
         });
         return { success: true };
+      }),
+  }),
+  companyColumns: router({
+    list: publicProcedure.query(async ({ ctx }) => {
+      await sessionEmail(ctx.req);
+      return listCompanyColumns(await sessionCompany(ctx.req));
+    }),
+    create: publicProcedure
+      .input(
+        z.object({
+          label: z.string().trim().min(1).max(120),
+          detail: z.string().trim().max(200).optional(),
+          color: z.string().trim().max(20).default("#D78A4A"),
+          roleLabel: z.string().trim().min(1).max(120),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        const email = await sessionEmail(ctx.req);
+        const operator = (
+          await db.select().from(users).where(eq(users.email, email)).limit(1)
+        )[0];
+        if (!operator || operator.prolineRole !== "admin")
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Sütun idarəetməsi yalnız Admin üçün açıqdır.",
+          });
+        const companyId = await sessionCompany(ctx.req);
+        const columnId = slugify(input.label);
+        if (!columnId)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Sütun adı düzgün deyil.",
+          });
+        const existing = await db
+          .select({ id: prolineCompanyColumns.id })
+          .from(prolineCompanyColumns)
+          .where(
+            and(
+              eq(prolineCompanyColumns.companyId, companyId),
+              eq(prolineCompanyColumns.columnId, columnId)
+            )
+          )
+          .limit(1);
+        if (existing[0])
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Bu adda sütun artıq mövcuddur.",
+          });
+        const maxSort = await db
+          .select({ sortOrder: prolineCompanyColumns.sortOrder })
+          .from(prolineCompanyColumns)
+          .where(eq(prolineCompanyColumns.companyId, companyId))
+          .orderBy(desc(prolineCompanyColumns.sortOrder))
+          .limit(1);
+        const sortOrder = (maxSort[0]?.sortOrder || 0) + 1;
+        const roleId = columnId;
+        return createCompanyColumn({
+          companyId,
+          columnId,
+          label: input.label,
+          detail: input.detail || "",
+          color: input.color,
+          roleId,
+          roleLabel: input.roleLabel,
+          sortOrder,
+        });
+      }),
+    update: publicProcedure
+      .input(
+        z.object({
+          columnId: z.string().min(1),
+          label: z.string().trim().min(1).max(120).optional(),
+          detail: z.string().trim().max(200).optional(),
+          color: z.string().trim().max(20).optional(),
+          roleLabel: z.string().trim().min(1).max(120).optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        const email = await sessionEmail(ctx.req);
+        const operator = (
+          await db.select().from(users).where(eq(users.email, email)).limit(1)
+        )[0];
+        if (!operator || operator.prolineRole !== "admin")
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Sütun redaktəsi yalnız Admin üçün açıqdır.",
+          });
+        const companyId = await sessionCompany(ctx.req);
+        const { columnId, ...updates } = input;
+        return updateCompanyColumn(companyId, columnId, updates);
+      }),
+    delete: publicProcedure
+      .input(z.object({ columnId: z.string().min(1) }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        const email = await sessionEmail(ctx.req);
+        const operator = (
+          await db.select().from(users).where(eq(users.email, email)).limit(1)
+        )[0];
+        if (!operator || operator.prolineRole !== "admin")
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Sütun silinməsi yalnız Admin üçün açıqdır.",
+          });
+        const companyId = await sessionCompany(ctx.req);
+        return deleteCompanyColumn(companyId, input.columnId);
       }),
   }),
 });

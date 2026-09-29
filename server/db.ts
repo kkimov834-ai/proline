@@ -4,6 +4,7 @@ import { PROLINE_ROLE_MAP, ownProlineColumn } from "@shared/prolineAuth";
 import {
   prolineAuditLogs,
   prolineComments,
+  prolineCompanyColumns,
   prolineNotifications,
   prolineOrders,
   prolinePushSubscriptions,
@@ -140,13 +141,15 @@ export async function listBoardData(email: string, companyId = "default") {
     .from(prolineOrders)
     .where(eq(prolineOrders.companyId, companyId))
     .orderBy(desc(prolineOrders.createdAt));
-  const ownColumn = ownProlineColumn(
-    role as "admin" | "production" | "polishing" | "paint" | "warehouse"
-  );
+  const ownColumn = role === "admin"
+    ? undefined
+    : ownProlineColumn(role as "admin" | "production" | "polishing" | "paint" | "warehouse");
   const orders =
     role === "admin"
       ? allOrders
-      : allOrders.filter(order => order.columnId === ownColumn);
+      : ownColumn
+        ? allOrders.filter(order => order.columnId === ownColumn)
+        : [];
   return { orders, notifications, staff };
 }
 
@@ -166,8 +169,8 @@ export async function addAuditLog(input: {
   orderId?: number;
   actorUserId: number;
   action: string;
-  fromColumn?: "orders" | "production" | "polishing" | "paint" | "warehouse";
-  toColumn?: "orders" | "production" | "polishing" | "paint" | "warehouse";
+  fromColumn?: string;
+  toColumn?: string;
   details?: string;
 }) {
   const db = await getDb();
@@ -386,4 +389,89 @@ export async function listPushSubscriptionsForUser(userId: number) {
     .select()
     .from(prolinePushSubscriptions)
     .where(eq(prolinePushSubscriptions.userId, userId));
+}
+
+export async function listCompanyColumns(companyId: string) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(prolineCompanyColumns)
+    .where(eq(prolineCompanyColumns.companyId, companyId))
+    .orderBy(prolineCompanyColumns.sortOrder);
+}
+
+export async function createCompanyColumn(input: {
+  companyId: string;
+  columnId: string;
+  label: string;
+  detail: string;
+  color: string;
+  roleId: string;
+  roleLabel: string;
+  sortOrder: number;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.insert(prolineCompanyColumns).values(input);
+  const rows = await db
+    .select()
+    .from(prolineCompanyColumns)
+    .where(
+      and(
+        eq(prolineCompanyColumns.companyId, input.companyId),
+        eq(prolineCompanyColumns.columnId, input.columnId)
+      )
+    )
+    .limit(1);
+  return rows[0];
+}
+
+export async function updateCompanyColumn(
+  companyId: string,
+  columnId: string,
+  updates: { label?: string; detail?: string; color?: string; roleLabel?: string }
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db
+    .update(prolineCompanyColumns)
+    .set(updates)
+    .where(
+      and(
+        eq(prolineCompanyColumns.companyId, companyId),
+        eq(prolineCompanyColumns.columnId, columnId)
+      )
+    );
+  return { success: true };
+}
+
+export async function deleteCompanyColumn(companyId: string, columnId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db
+    .delete(prolineCompanyColumns)
+    .where(
+      and(
+        eq(prolineCompanyColumns.companyId, companyId),
+        eq(prolineCompanyColumns.columnId, columnId)
+      )
+    );
+  return { success: true };
+}
+
+export async function getCompanyColumnByRoleId(companyId: string, roleId: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db
+    .select()
+    .from(prolineCompanyColumns)
+    .where(
+      and(
+        eq(prolineCompanyColumns.companyId, companyId),
+        eq(prolineCompanyColumns.roleId, roleId)
+      )
+    )
+    .limit(1);
+  return rows[0];
 }

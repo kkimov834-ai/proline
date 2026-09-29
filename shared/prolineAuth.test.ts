@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { canProlineRoleMove, nextProlineColumn, PROLINE_COLUMN_ORDER, PROLINE_ROLE_MAP, visibleProlineColumns } from "./prolineAuth";
+import { canProlineRoleMove, nextProlineColumn, PROLINE_BASE_COLUMN_ORDER, PROLINE_ROLE_MAP, visibleProlineColumns } from "./prolineAuth";
 
 describe("PROLINE role visibility and movement rules", () => {
   it("allows every role to view the complete five-column board", () => {
-    expect(PROLINE_COLUMN_ORDER).toEqual(["orders", "production", "polishing", "paint", "warehouse"]);
+    expect(PROLINE_BASE_COLUMN_ORDER).toEqual(["orders", "production", "polishing", "paint", "warehouse"]);
     expect(Object.values(PROLINE_ROLE_MAP)).toHaveLength(5);
   });
 

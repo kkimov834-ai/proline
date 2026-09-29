@@ -1,15 +1,15 @@
-export type ProlineNotificationColumn = "orders" | "production" | "polishing" | "paint" | "warehouse";
-export type ProlineNotificationRole = "admin" | "production" | "polishing" | "paint" | "warehouse";
+export type ProlineNotificationColumn = string;
+export type ProlineNotificationRole = string;
 
-export function prolineApprovalTargetRole(to: ProlineNotificationColumn): ProlineNotificationRole {
+export function prolineApprovalTargetRole(to: string): string {
   return to === "orders" ? "admin" : to;
 }
 
-export function canRespondToPendingNotice(to: ProlineNotificationColumn, role: ProlineNotificationRole) {
+export function canRespondToPendingNotice(to: string, role: string) {
   return role === prolineApprovalTargetRole(to);
 }
 
-const roleColumn: Record<ProlineNotificationRole, ProlineNotificationColumn | undefined> = {
+const roleColumn: Record<string, string | undefined> = {
   admin: undefined,
   production: "production",
   polishing: "polishing",
@@ -18,8 +18,8 @@ const roleColumn: Record<ProlineNotificationRole, ProlineNotificationColumn | un
 };
 
 export function isPendingNoticeForUser(
-  notice: { status: string; to: ProlineNotificationColumn; requester: string | number },
-  role: ProlineNotificationRole,
+  notice: { status: string; to: string; requester: string | number },
+  role: string,
   userId: number,
 ) {
   if (notice.status !== "pending") return false;

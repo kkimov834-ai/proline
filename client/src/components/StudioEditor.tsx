@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Check, X, Plus, Settings, Trash2, ClipboardList, Box, Activity, Clock, List, Layout, ToggleLeft, Hash, Type, AlignLeft, Calendar } from "lucide-react";
-type ColumnId = "orders" | "production" | "polishing" | "paint" | "warehouse";
+type ColumnId = string;
 
 export type StudioColumn = { id: string; sourceId?: ColumnId; label: string; detail: string; color: string; visible: boolean };
 export type StudioMetric = { id: string; label: string; metric: "active" | "completed" | "urgent" | "today"; visible: boolean };
@@ -17,6 +17,8 @@ export function StudioEditor({
   const [activeTab, setActiveTab] = useState<"add" | "properties">("add");
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
   const [draggedItem, setDraggedItem] = useState<{ type: string; payload?: any } | null>(null);
+  const [showAddColumnModal, setShowAddColumnModal] = useState(false);
+  const [newColumnName, setNewColumnName] = useState("");
 
   const fieldTypes = [
     { id: "short-text", label: "Short Text", icon: Type },
@@ -40,6 +42,31 @@ export function StudioEditor({
     setDraft(prev => ({ ...prev, columns: [...prev.columns, newCol] }));
     setSelectedColumn(newCol.id);
     setActiveTab("properties");
+  }
+  
+  function openAddColumnModal() {
+    setNewColumnName("");
+    setShowAddColumnModal(true);
+  }
+  
+  function closeAddColumnModal() {
+    setShowAddColumnModal(false);
+    setNewColumnName("");
+  }
+  
+  function confirmAddColumn() {
+    if (!newColumnName.trim()) return;
+    const newCol: StudioColumn = {
+      id: `studio-${Date.now()}`,
+      label: newColumnName,
+      detail: "New Field",
+      color: "#D78A4A",
+      visible: true
+    };
+    setDraft(prev => ({ ...prev, columns: [...prev.columns, newCol] }));
+    setSelectedColumn(newCol.id);
+    setActiveTab("properties");
+    closeAddColumnModal();
   }
 
   function handleDropOnBoard(e: React.DragEvent) {
@@ -82,7 +109,7 @@ export function StudioEditor({
           onDragOver={e => e.preventDefault()}
           onDrop={handleDropOnBoard}
         >
-          <div className="text-sm font-bold uppercase tracking-[.15em] text-[#70818E] mb-6">C?DV?L SÜTUNLARININ ÖNIZL?M?SI</div>
+          <div className="text-sm font-bold uppercase tracking-[.15em] text-[#70818E] mb-6">C?DV?L Sï¿½TUNLARININ ï¿½NIZL?M?SI</div>
           
           <div className="flex gap-4 items-start">
             {draft.columns.map(col => (
@@ -116,11 +143,11 @@ export function StudioEditor({
             <div 
               className={`w-[280px] h-[200px] flex-none rounded-xl border-2 border-dashed flex items-center justify-center text-sm font-medium transition ${draggedItem ? 'border-[#3E80E5] bg-[#3E80E5]/5 text-[#3E80E5]' : 'border-white/20 text-[#70818E]'}`}
             >
-              Sah?l?ri bura sürükl?y?r?k<br/>c?dv?l? sütun ?lav? edin
+              Sah?l?ri bura sï¿½rï¿½kl?y?r?k<br/>c?dv?l? sï¿½tun ?lav? edin
             </div>
           </div>
           
-          <div className="mt-12 text-sm font-bold uppercase tracking-[.15em] text-[#70818E] mb-6">M?LUMAT KARTLARI ÖNIZL?M?SI</div>
+          <div className="mt-12 text-sm font-bold uppercase tracking-[.15em] text-[#70818E] mb-6">M?LUMAT KARTLARI ï¿½NIZL?M?SI</div>
           <div className="flex flex-wrap gap-4">
              {draft.metrics.map(m => (
                <div key={m.id} className="relative group p-4 bg-[#16202A] border border-white/10 rounded-xl min-w-[200px]">
@@ -140,7 +167,7 @@ export function StudioEditor({
 
       <div className="w-[300px] flex-none border-l border-white/10 bg-[#16202A] flex flex-col">
         <div className="p-4 border-b border-white/10">
-          <div className="text-[10px] font-bold uppercase tracking-[.15em] text-[#70818E] mb-1">GÖRÜNÜS SEÇICI</div>
+          <div className="text-[10px] font-bold uppercase tracking-[.15em] text-[#70818E] mb-1">Gï¿½Rï¿½Nï¿½S SEï¿½ICI</div>
           <select className="w-full bg-[#0C141C] border border-white/10 rounded-lg p-2 text-sm text-white outline-none">
             <option>List View</option>
             <option>Board View</option>
@@ -219,7 +246,7 @@ export function StudioEditor({
           {activeTab === "properties" && selectedColData && (
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-[.15em] text-[#70818E] mb-1.5 block">Sütun Adi</label>
+                <label className="text-[10px] font-bold uppercase tracking-[.15em] text-[#70818E] mb-1.5 block">Sï¿½tun Adi</label>
                 <input 
                   type="text"
                   value={selectedColData.label}
@@ -234,7 +261,7 @@ export function StudioEditor({
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-[.15em] text-[#70818E] mb-1.5 block">Açiqlama</label>
+                <label className="text-[10px] font-bold uppercase tracking-[.15em] text-[#70818E] mb-1.5 block">Aï¿½iqlama</label>
                 <input 
                   type="text"
                   value={selectedColData.detail}
@@ -276,7 +303,7 @@ export function StudioEditor({
                   }}
                   className="rounded bg-[#0C141C] border-white/10"
                 />
-                Görünür
+                GÃ¶rÃ¼nÃ¼ÅŸ
               </label>
               
               <div className="pt-4 border-t border-white/10 mt-4">
@@ -288,7 +315,7 @@ export function StudioEditor({
                   }}
                   className="w-full flex items-center justify-center gap-2 p-2.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition text-sm font-bold"
                 >
-                  <Trash2 size={16} /> Sütunu Sil
+                  <Trash2 size={16} /> SÃ¼tunu Sil
                 </button>
               </div>
             </div>
@@ -296,7 +323,7 @@ export function StudioEditor({
 
           {activeTab === "properties" && !selectedColData && (
             <div className="text-center text-[#70818E] text-sm py-10">
-              Redakt? etm?k üçün sütun seçin
+              RedaktÉ™ etmÉ™k Ã¼Ã§Ã¼n sÃ¼tun seÃ§in
             </div>
           )}
         </div>

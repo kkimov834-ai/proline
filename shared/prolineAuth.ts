@@ -10,29 +10,45 @@ export const PROLINE_ROLE_MAP = {
 
 export type ProlineEmail = keyof typeof PROLINE_ROLE_MAP;
 export type ProlineRole = (typeof PROLINE_ROLE_MAP)[ProlineEmail]["role"];
-export const PROLINE_COLUMN_ORDER = ["orders", "production", "polishing", "paint", "warehouse"] as const;
-export type ProlineColumn = (typeof PROLINE_COLUMN_ORDER)[number];
-export function ownProlineColumn(role: ProlineRole): ProlineColumn | undefined {
+export const PROLINE_BASE_COLUMN_ORDER = ["orders", "production", "polishing", "paint", "warehouse"] as const;
+export type ProlineBaseColumn = (typeof PROLINE_BASE_COLUMN_ORDER)[number];
+export type ProlineColumn = string;
+
+export function ownProlineColumn(role: string): string | undefined {
   const config = Object.values(PROLINE_ROLE_MAP).find((item) => item.role === role);
   return config && "column" in config ? config.column : undefined;
 }
 
-export function visibleProlineColumns(role: ProlineRole): ProlineColumn[] {
-  if (role === "admin") return [...PROLINE_COLUMN_ORDER];
+export function visibleProlineColumns(role: string, columnOrder?: string[]): string[] {
+  const order = columnOrder || [...PROLINE_BASE_COLUMN_ORDER];
+  if (role === "admin") return [...order];
   const ownColumn = ownProlineColumn(role);
   if (!ownColumn) return [];
-  const ownIndex = PROLINE_COLUMN_ORDER.indexOf(ownColumn);
-  return [ownColumn, PROLINE_COLUMN_ORDER[ownIndex + 1]].filter(Boolean) as ProlineColumn[];
+  const ownIndex = order.indexOf(ownColumn);
+  if (ownIndex < 0) return [ownColumn];
+  return [ownColumn, order[ownIndex + 1]].filter(Boolean) as string[];
 }
 
-export function nextProlineColumn(column: ProlineColumn): ProlineColumn | undefined {
-  return PROLINE_COLUMN_ORDER[PROLINE_COLUMN_ORDER.indexOf(column) + 1];
+export function nextProlineColumn(column: string, columnOrder?: string[]): string | undefined {
+  const order = columnOrder || [...PROLINE_BASE_COLUMN_ORDER];
+  return order[order.indexOf(column) + 1];
 }
 
-export function canProlineRoleMove(role: ProlineRole, from: ProlineColumn, to: ProlineColumn) {
+export function canProlineRoleMove(role: string, from: string, to: string, columnOrder?: string[]) {
   if (role === "admin") return true;
+  const order = columnOrder || [...PROLINE_BASE_COLUMN_ORDER];
   const config = Object.values(PROLINE_ROLE_MAP).find((item) => item.role === role);
-  const fromIndex = PROLINE_COLUMN_ORDER.indexOf(from);
-  const toIndex = PROLINE_COLUMN_ORDER.indexOf(to);
-  return !!config && "column" in config && config.column === from && toIndex === fromIndex + 1;
+  const fromIndex = order.indexOf(from);
+  const toIndex = order.indexOf(to);
+  if (config && "column" in config) {
+    return config.column === from && toIndex === fromIndex + 1;
+  }
+  return false;
+}
+
+export function slugify(text: string): string {
+  return text
+    .toLocaleLowerCase("az-AZ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
